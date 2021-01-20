@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class TatoMoveTest : MonoBehaviour
 {
-    float movem;
+    Vector3 movem;
 
     // Update is called once per frame
     void Update()
     {
-        movem = Input.GetAxis("Vertical");
+        movem.y = Input.GetAxis("Vertical");
+        movem.x = Input.GetAxis("Horizontal");
     }
 
     private void FixedUpdate() {
-        transform.position += Vector3.up * movem * Time.fixedDeltaTime;
+        transform.position += movem * Time.fixedDeltaTime;
+    }
+
+    private void OnDrawGizmos() {
+        //UnityEditor.Handles.DrawWireDisc(transform.position,Vector3.forward,GetComponent<CircleCollider2D>().radius*2);
+        UnityEditor.Handles.DrawWireDisc(transform.position,Vector3.forward,GetComponent<CircleCollider2D>().radius+.1f);
     }
 }

@@ -46,17 +46,23 @@ public class GroundController : MonoBehaviour {
 			coordYinCircle_cache.Add(i,d);
 		}
 	}
-
+/*
 	private void OnCollisionEnter2D(Collision2D other) {
 		if(other.gameObject.CompareTag("Player")){
-			DestroyGround(other.collider as CircleCollider2D);
+			DestroyGround(other.collider.GetComponent<CircleCollider2D>());
+		}
+	}*/
+	private void OnTriggerEnter2D(Collider2D other) {
+		if(other.gameObject.CompareTag("Player")){
+			DestroyGround(other as CircleCollider2D);
 		}
 	}
 
 	public void  DestroyGround( CircleCollider2D collider ){
 
 		Vector2Int center = World2Pixel(collider.bounds.center.x, collider.bounds.center.y);
-		int radio = Mathf.RoundToInt(collider.bounds.size.x*widthPixel/widthWorld);
+		int radio = Mathf.RoundToInt(collider.bounds.size.x/2*widthPixel/widthWorld); //TRIGGER VERSION se usa el bounds /2
+		radio+=10;
 
 		int px, nx, py, ny, bordeY;
 		
@@ -67,7 +73,7 @@ public class GroundController : MonoBehaviour {
 				bordeY = coordYinCircle_cache[i];
 			}
 			else{
-				CalculateCircleBorderCache((int)radio);
+				CalculateCircleBorderCache(radio);
 				bordeY = coordYinCircle_cache[i];
 			}
 			
@@ -88,7 +94,8 @@ public class GroundController : MonoBehaviour {
 
 		//"""Recalcular el collider (por ahora)"""
 		Destroy(GetComponent<PolygonCollider2D>());
-		gameObject.AddComponent<PolygonCollider2D>();
+		PolygonCollider2D newcolli = gameObject.AddComponent<PolygonCollider2D>();
+		newcolli.isTrigger = true; //TRIGGER VERSION
 	}
 
 	private Vector2Int World2Pixel(float x, float y) {
