@@ -39,6 +39,7 @@
      <Compile Include="Assets\Scripts\EnemigoMovimiento.cs" />
      <Compile Include="Assets\Scripts\GroundController.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest.cs" />
+     <Compile Include="Assets\Scripts\TatoMoveTest2.cs" />
      <None Include="Assets\Models\borrarTxt.txt" />
      <None Include="Assets\Sprites\borrarTxt.txt" />
      <None Include="Assets\Prefabs\borrarTxt.txt" />
