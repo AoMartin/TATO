@@ -51,13 +51,13 @@ public class GroundController : MonoBehaviour {
 		if(other.gameObject.CompareTag("Player")){
 			DestroyGround(other.collider.GetComponent<CircleCollider2D>());
 		}
-	}*/
+	}
 	private void OnTriggerEnter2D(Collider2D other) {
 		if(other.gameObject.CompareTag("Player")){
 			DestroyGround(other as CircleCollider2D);
 		}
 	}
-
+*/
 	public void  DestroyGround( CircleCollider2D collider ){
 
 		Vector2Int center = World2Pixel(collider.bounds.center.x, collider.bounds.center.y);
@@ -93,9 +93,9 @@ public class GroundController : MonoBehaviour {
 		spriteRenderer.sprite.texture.Apply();
 
 		//"""Recalcular el collider (por ahora)"""
-		Destroy(GetComponent<PolygonCollider2D>());
-		PolygonCollider2D newcolli = gameObject.AddComponent<PolygonCollider2D>();
-		newcolli.isTrigger = true; //TRIGGER VERSION
+		//Destroy(GetComponent<PolygonCollider2D>());
+		//PolygonCollider2D newcolli = gameObject.AddComponent<PolygonCollider2D>();
+		//newcolli.isTrigger = true; //TRIGGER VERSION
 	}
 
 	private Vector2Int World2Pixel(float x, float y) {

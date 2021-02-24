@@ -40,9 +40,9 @@
      <Compile Include="Assets\Scripts\GroundController.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest2.cs" />
+     <Compile Include="Assets\Scripts\Tierra.cs" />
      <None Include="Assets\Models\borrarTxt.txt" />
      <None Include="Assets\Sprites\borrarTxt.txt" />
-     <None Include="Assets\Prefabs\borrarTxt.txt" />
      <None Include="Assets\Materials\borrarTxt.txt" />
      <None Include="Assets\Animations\borrarTxt.txt" />
     <Reference Include="UnityEngine">
@@ -574,31 +574,31 @@
         <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.20f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-        <HintPath>C:/Users/Martin/Documents/Unity Projects/TATO/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
