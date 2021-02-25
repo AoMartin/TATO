@@ -98,6 +98,14 @@ public class GroundController : MonoBehaviour {
 		//newcolli.isTrigger = true; //TRIGGER VERSION
 	}
 
+	//1- Calcular posicion dentro de la textura del circulo a excavar 
+	//2- Calcular la posicion e identificar cada uno de los pixeles que conforman el circulo
+	//3- Encontrar la posicion de los pixeles dentro del array de la textura que devuelve GetPixels()
+	//4- Modificar los pixeles correspondientes en el array
+	
+	//??? - cachear los pixeles borrados para evitar volver a calcularlos?
+	//??? - usar SetPixels() pero con la version sobrecargada que permite deifinir la region a modificar
+
 	private Vector2Int World2Pixel(float x, float y) {
 		Vector2Int vector = new Vector2Int();
 		
