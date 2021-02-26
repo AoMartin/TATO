@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class TatoMoveTest : MonoBehaviour
 {
-    Vector3 movem;
-
+    protected Vector3 movem;
+    public float velocidad = 1.0f;
+    
     // Update is called once per frame
     void Update()
     {

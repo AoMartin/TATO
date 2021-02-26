@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TatoMoveTest2 : TatoMoveTest
+public class TatoMoveTest_ArribaAbajo : TatoMoveTest
 {
-    //public float speed = 1.0f;
-
-    // Update is called once per frame
     void Update()
     {
         movem.y = Input.GetAxis("Vertical");
         movem.x = Input.GetAxis("Horizontal");
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         transform.position += movem * Time.fixedDeltaTime * velocidad;
     }
 
