@@ -38,9 +38,11 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\EnemigoMovimiento.cs" />
      <Compile Include="Assets\Scripts\GroundController.cs" />
+     <Compile Include="Assets\Scripts\MenuDebug.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest2.cs" />
      <Compile Include="Assets\Scripts\Tierra.cs" />
+     <Compile Include="Assets\Scripts\TierrasBlandas.cs" />
      <None Include="Assets\Models\borrarTxt.txt" />
      <None Include="Assets\Sprites\borrarTxt.txt" />
      <None Include="Assets\Materials\borrarTxt.txt" />

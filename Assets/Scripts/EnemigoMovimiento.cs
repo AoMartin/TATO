@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemigoMovimiento : MonoBehaviour
 {
@@ -8,8 +9,8 @@ public class EnemigoMovimiento : MonoBehaviour
     Rigidbody2D rigibody;
     public bool mirandoDerecha = false;
     private Vector3 posicionInicial;
-    RaycastHit2D tocaElSuelo;
-  
+
+    public bool vertical = false;
 
     void Awake()
     {
@@ -21,13 +22,6 @@ public class EnemigoMovimiento : MonoBehaviour
     {
         this.transform.position = posicionInicial;
     }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
     
     private void FixedUpdate()
     {
@@ -38,16 +32,18 @@ public class EnemigoMovimiento : MonoBehaviour
         if(mirandoDerecha)
         {
             velocidadActual = velocidad;
-            this.transform.localEulerAngles = new Vector3(0, 180, 0);
+            if(!vertical) this.transform.localEulerAngles = new Vector3(0, 180, 0);
         }
         else
         {
             velocidadActual = -velocidad;
-            this.transform.localEulerAngles = Vector3.zero;
+            if(!vertical) this.transform.localEulerAngles = Vector3.zero;
         }
 
-        rigibody.velocity = new Vector2(velocidadActual, rigibody.velocity.y);
-                                   
+        if(!vertical)
+            rigibody.velocity = new Vector2(velocidadActual, rigibody.velocity.y);
+        else
+            rigibody.velocity = new Vector2(rigibody.velocity.x,velocidadActual);                
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -59,5 +55,9 @@ public class EnemigoMovimiento : MonoBehaviour
     }
 
 
-
+    private void OnCollisionEnter2D(Collision2D other) {
+        if(other.gameObject.CompareTag("Player")){
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
 }
