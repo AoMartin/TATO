@@ -56,7 +56,7 @@ public class MenuDebug : MonoBehaviour
     }
 
     public void Restart(){
-        modo.text("Restarteando...");
+        modo.text="Restarteando...";
         arribaAbajo.gameObject.transform.position = Vector3.zero;
         Rigidbody2D rb = arribaAbajo.gameObject.GetComponent<Rigidbody2D>();
         rb.velocity = Vector3.zero;
