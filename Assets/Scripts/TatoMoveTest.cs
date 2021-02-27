@@ -18,8 +18,4 @@ public class TatoMoveTest : MonoBehaviour
         transform.position += movem * Time.fixedDeltaTime;
     }
 
-    private void OnDrawGizmos() {
-        //UnityEditor.Handles.DrawWireDisc(transform.position,Vector3.forward,GetComponent<CircleCollider2D>().radius*2);
-        UnityEditor.Handles.DrawWireDisc(transform.position,Vector3.forward,GetComponent<CircleCollider2D>().radius+.1f);
-    }
 }

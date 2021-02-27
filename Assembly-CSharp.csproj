@@ -36,12 +36,10 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CrearTierras.cs" />
      <Compile Include="Assets\Scripts\EnemigoMovimiento.cs" />
      <Compile Include="Assets\Scripts\GroundController.cs" />
      <Compile Include="Assets\Scripts\MenuDebug.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest.cs" />
-     <Compile Include="Assets\Scripts\TatoMoveTest2.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest_ArribaAbajo.cs" />
      <Compile Include="Assets\Scripts\TatoMoveTest_Constante.cs" />
      <Compile Include="Assets\Scripts\Tierra.cs" />

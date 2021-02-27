@@ -8,7 +8,6 @@ public class MenuDebug : MonoBehaviour
     bool mostrar_menu = false;
     public KeyCode tecla;
     
-    TatoMoveTest tato;
     EnemigoMovimiento[] enemigos;
     public PhysicsMaterial2D tierra_dura; 
 
@@ -17,29 +16,66 @@ public class MenuDebug : MonoBehaviour
     public TatoMoveTest_Constante constante;
     bool es_constante = false;
 
+    public GameObject tierras;
+    public GameObject prefab_tierras;
+
+    public static MenuDebug MD;
     private void Awake() {
-        tato = FindObjectOfType<TatoMoveTest>();
+        MD = this;
+
         enemigos = FindObjectsOfType<EnemigoMovimiento>();
 
-        tato_velocidad.text = tato.velocidad.ToString();
+        tato_velocidad.text = constante.velocidad.ToString();
+        tato_velocidad2.text = arribaAbajo.velocidad.ToString();
         enemigo_velocidad.text = enemigos[0].velocidad.ToString();
         borde_friccion.text= tierra_dura.friction.ToString();
         borde_rebote.text= tierra_dura.bounciness.ToString();
         freno.text = constante.freno.ToString();
+        freno2.text = arribaAbajo.freno.ToString();
+
+        if(constante.enabled) modo.text = "Modo: Constante";
+        else modo.text = "Modo: ArribaAbajo";
     }
 
     public TMP_InputField tato_velocidad;
+    public TMP_InputField tato_velocidad2;
     public TMP_InputField enemigo_velocidad;
     public TMP_InputField borde_friccion;
     public TMP_InputField borde_rebote;
     public TMP_InputField freno;
+    public TMP_InputField freno2;
+    public TMP_Text modo;
 
     public void CerrarMenu(){
         menu.SetActive(!menu.gameObject.activeSelf);
+        Time.timeScale = menu.gameObject.activeSelf? 0.0f : 1.0f;
     }
 
     public void Salir(){
         Application.Quit();
+    }
+
+    public void Restart(){
+        modo.text("Restarteando...");
+        arribaAbajo.gameObject.transform.position = Vector3.zero;
+        Rigidbody2D rb = arribaAbajo.gameObject.GetComponent<Rigidbody2D>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = 0.0f;
+        rb.drag = 0;
+        Destroy(tierras);
+        tierras = Instantiate(prefab_tierras,Vector3.zero,Quaternion.identity);
+        if(constante.enabled) modo.text = "Modo: Constante";
+        else modo.text = "Modo: ArribaAbajo";
+    }
+
+    public void CambiarModo(){
+        constante.enabled = !constante.enabled;
+        arribaAbajo.enabled = !arribaAbajo.enabled;
+
+        if(constante.enabled) modo.text = "Modo: Constante";
+        else modo.text = "Modo: ArribaAbajo";
+
+        CambiarValores();
     }
 
     void Update()
@@ -48,7 +84,7 @@ public class MenuDebug : MonoBehaviour
             mostrar_menu = !mostrar_menu;
             CerrarMenu();
         }
-        Time.timeScale = mostrar_menu? 0.0f : 1.0f;
+        
     }
 
     public void CambiarValores()
@@ -56,12 +92,22 @@ public class MenuDebug : MonoBehaviour
         float tatovel;
         if (float.TryParse(tato_velocidad.text, out tatovel))
         {
-            tato.velocidad = tatovel;
+            constante.velocidad = tatovel;
         }
         float frenotato;
         if (float.TryParse(freno.text, out frenotato))
         {
             constante.freno = frenotato;
+        }
+        float tatovel2;
+        if (float.TryParse(tato_velocidad2.text, out tatovel2))
+        {
+            arribaAbajo.velocidad = tatovel2;
+        }
+        float frenotato2;
+        if (float.TryParse(freno2.text, out frenotato2))
+        {
+            arribaAbajo.freno = frenotato2;
         }
         float enemigovel;
         if (float.TryParse(enemigo_velocidad.text, out enemigovel))
