@@ -19,6 +19,8 @@ public class MenuDebug : MonoBehaviour
     public GameObject tierras;
     public GameObject prefab_tierras;
 
+    public TierrasBlandas tierrasBlandas;
+
     public static MenuDebug MD;
     private void Awake() {
         MD = this;
@@ -32,6 +34,7 @@ public class MenuDebug : MonoBehaviour
         borde_rebote.text= tierra_dura.bounciness.ToString();
         freno.text = constante.freno.ToString();
         freno2.text = arribaAbajo.freno.ToString();
+        txt_tierras.text = tierrasBlandas.fuerza.ToString();
 
         if(constante.enabled) modo.text = "Modo: Constante";
         else modo.text = "Modo: ArribaAbajo";
@@ -44,6 +47,7 @@ public class MenuDebug : MonoBehaviour
     public TMP_InputField borde_rebote;
     public TMP_InputField freno;
     public TMP_InputField freno2;
+    public TMP_InputField txt_tierras;
     public TMP_Text modo;
 
     public void CerrarMenu(){
@@ -62,8 +66,16 @@ public class MenuDebug : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.angularVelocity = 0.0f;
         rb.drag = 0;
+        tierrasBlandas = null;
         Destroy(tierras);
         tierras = Instantiate(prefab_tierras,Vector3.zero,Quaternion.identity);
+        tierrasBlandas = tierras.GetComponent<TierrasBlandas>();
+        float ftierras;
+        if (float.TryParse(txt_tierras.text, out ftierras))
+        {
+            tierrasBlandas.fuerza = ftierras;
+            tierrasBlandas.UpdateTierras();
+        }
         if(constante.enabled) modo.text = "Modo: Constante";
         else modo.text = "Modo: ArribaAbajo";
     }
@@ -125,6 +137,12 @@ public class MenuDebug : MonoBehaviour
         if (float.TryParse(borde_rebote.text, out rebote))
         {
             tierra_dura.bounciness = rebote;
+        }
+        float ftierras;
+        if (float.TryParse(txt_tierras.text, out ftierras))
+        {
+            tierrasBlandas.fuerza = ftierras;
+            tierrasBlandas.UpdateTierras();
         }
     }
 

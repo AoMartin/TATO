@@ -4015,7 +4015,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6854614989930741273}
-  - component: {fileID: 6854614989930741272}
   m_Layer: 0
   m_Name: TierraBlanda
   m_TagString: Untagged
@@ -4045,19 +4044,6 @@ Transform:
   m_Father: {fileID: 6937492015002028788}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6854614989930741272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6854614989930741275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34d9aa538d860ed46971b289156da859, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuerza: 3
 --- !u!1 &6854614989936970461
 GameObject:
   m_ObjectHideFlags: 0
@@ -6171,7 +6157,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6854614990349536272}
-  - component: {fileID: 6854614990349536273}
   m_Layer: 0
   m_Name: TierraBlanda
   m_TagString: Untagged
@@ -6201,19 +6186,6 @@ Transform:
   m_Father: {fileID: 6937492015002028788}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6854614990349536273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6854614990349536274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34d9aa538d860ed46971b289156da859, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuerza: 3
 --- !u!1 &6854614990370559721
 GameObject:
   m_ObjectHideFlags: 0
@@ -9667,7 +9639,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6854614990672070098}
-  - component: {fileID: 6854614990672070099}
   m_Layer: 0
   m_Name: TierraBlanda
   m_TagString: Untagged
@@ -9697,19 +9668,6 @@ Transform:
   m_Father: {fileID: 6937492015002028788}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6854614990672070099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6854614990672070096}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34d9aa538d860ed46971b289156da859, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuerza: 3
 --- !u!1 &6854614990689943243
 GameObject:
   m_ObjectHideFlags: 0
@@ -11424,7 +11382,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6854614990808079875}
-  - component: {fileID: 6854614990808079874}
   m_Layer: 0
   m_Name: TierraBlanda
   m_TagString: Untagged
@@ -11454,19 +11411,6 @@ Transform:
   m_Father: {fileID: 6937492015002028788}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6854614990808079874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6854614990808079873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34d9aa538d860ed46971b289156da859, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuerza: 3
 --- !u!1 &6854614990821162953
 GameObject:
   m_ObjectHideFlags: 0
@@ -18624,6 +18568,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6937492015002028788}
+  - component: {fileID: 5252321194238385251}
   m_Layer: 0
   m_Name: PrefabTierras
   m_TagString: Untagged
@@ -18650,6 +18595,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5252321194238385251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6937492015002028789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34d9aa538d860ed46971b289156da859, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuerza: 3
 --- !u!1 &6937492015010040286
 GameObject:
   m_ObjectHideFlags: 0
@@ -20001,7 +19959,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6937492015808049026}
-  - component: {fileID: 6937492015808049027}
   m_Layer: 0
   m_Name: TierraBlanda
   m_TagString: Untagged
@@ -20031,19 +19988,6 @@ Transform:
   m_Father: {fileID: 6937492015002028788}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6937492015808049027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6937492015808049024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34d9aa538d860ed46971b289156da859, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuerza: 3
 --- !u!1 &6937492015931458515
 GameObject:
   m_ObjectHideFlags: 0

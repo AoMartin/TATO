@@ -12,4 +12,11 @@ public class TierrasBlandas : MonoBehaviour
             effectors[i].forceMagnitude = fuerza;
         }
     }
+
+    public void UpdateTierras(){
+        AreaEffector2D[] effectors = GetComponentsInChildren<AreaEffector2D>();
+        for(int i = 0; i < effectors.Length; i++){
+            effectors[i].forceMagnitude = fuerza;
+        }
+    }
 }
