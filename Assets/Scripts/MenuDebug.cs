@@ -80,6 +80,11 @@ public class MenuDebug : MonoBehaviour
         else modo.text = "Modo: ArribaAbajo";
     }
 
+    public void RestartMobile(){
+        modo.text = "RESETEANDO! . . . (esperar)";
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void CambiarModo(){
         constante.enabled = !constante.enabled;
         arribaAbajo.enabled = !arribaAbajo.enabled;

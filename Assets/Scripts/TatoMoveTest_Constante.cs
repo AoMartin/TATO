@@ -15,6 +15,7 @@ public class TatoMoveTest_Constante : TatoMoveTest
     }
 
     private void Update() {
+
         mover = Input.GetButton("Constante");
         factor_movim = mover? factor_movim + Time.deltaTime : 0.0f;
         //avanzar = Input.GetAxis("Constante");

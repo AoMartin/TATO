@@ -57,7 +57,12 @@ public class EnemigoMovimiento : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D other) {
         if(other.gameObject.CompareTag("Player")){
             //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            MenuDebug.MD.Restart();
+            #if UNITY_EDITOR || UNITY_STANDALONE
+                MenuDebug.MD.Restart();
+
+            #elif UNITY_ANDROID
+                MenuDebug.MD.RestartMobile();
+            #endif
         }
     }
 }
