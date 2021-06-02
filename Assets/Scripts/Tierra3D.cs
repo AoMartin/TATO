@@ -1,0 +1,281 @@
+using UnityEngine;
+using UnityEditor;
+
+[RequireComponent(typeof(BoxCollider2D))]
+public class Tierra3D : MonoBehaviour
+{
+
+    struct Coord
+    {
+        public int tileX;
+        public int tileY;
+
+        public Coord(int x, int y)
+        {
+            tileX = x;
+            tileY = y;
+        }
+    }
+    static Transform tato;
+    static CircleCollider2D tatu_collider;
+    public static int fps_para_excavar = 7;
+    bool excavando = false;
+
+    private void Awake()
+    {
+        //groundController = GetComponent<GroundController>();
+        if (tatu_collider == null) tatu_collider = GameObject.FindGameObjectWithTag("Player").GetComponent<CircleCollider2D>();
+        tato = tatu_collider.transform;
+    }
+
+    private void Update()
+    {
+        if (excavando && Time.frameCount % fps_para_excavar == 0)
+        {
+            Coord tatoCoord = PuntoToCoord(tato.position);
+            //Debug.Log($"{tatoCoord.tileX}:{tatoCoord.tileY}");
+            ExcavarCirculo2(tatoCoord, Mathf.RoundToInt(tatu_collider.radius / tamañoCelda));
+
+            //Una vez se ha excavado un circulo se debe regenerar el mesh
+            RegenerarMapa();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            excavando = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            excavando = false;
+        }
+    }
+
+
+    [Min(1)]
+    public int anchoAproximado;
+    [Min(1)]
+    public int altoAproximado;
+    [Min(0.1f)]
+    public float tamañoCelda = 1;
+	[Min(0)]
+	public int suavizado = 0;
+
+    int nodosX;
+    int nodosY;
+    int[,] mapa;
+    Vector3 origenCoordenadas;
+
+    void Start()
+    {
+        GenerarMapa();
+    }
+    /*
+        void Update() {
+            if (Input.GetMouseButtonDown(0)) {
+                Coord posicionMouse = PuntoToCoord(Input.mousePosition.x,Input.mousePosition.y);
+                ExcavarCirculo(posicionMouse,3);
+
+                //Una vez se ha excavado un circulo se debe regenerar el mesh
+                RegenerarMapa();
+            }
+        }*/
+
+
+    void GenerarMapa()
+    {
+        nodosX = Mathf.RoundToInt(anchoAproximado / tamañoCelda);
+        nodosY = Mathf.RoundToInt(altoAproximado / tamañoCelda);
+        mapa = new int[nodosX, nodosY];
+
+        float mapaAncho = nodosX * tamañoCelda;
+        float mapaAlto = nodosY * tamañoCelda;
+        float bordeIzquierdo = -mapaAncho / 2 + tamañoCelda / 2;
+        float bordeInferior = -mapaAlto / 2 + tamañoCelda / 2;
+        origenCoordenadas = new Vector3(bordeIzquierdo, bordeInferior, 0.0f);
+
+        RellenarMapa();
+        //SuavizarMapa();
+
+        GeneradorDeTierra meshGen = GetComponent<GeneradorDeTierra>();
+        meshGen.GenerarTierraMesh(mapa, tamañoCelda);
+    }
+
+    void RegenerarMapa()
+    {
+		//TODO suavizar comentado
+        SuavizarMapa(suavizado);
+        GeneradorDeTierra meshGen = GetComponent<GeneradorDeTierra>();
+        meshGen.GenerarTierraMesh(mapa, tamañoCelda);
+
+    }
+
+    void RellenarMapa()
+    {
+        for (int x = 0; x < nodosX; x++)
+        {
+            for (int y = 0; y < nodosY; y++)
+            {
+                // 1 - Relleno, 0 - Vacio
+                mapa[x, y] = 1;
+            }
+        }
+    }
+
+    Coord PuntoToCoord(Vector3 punto)
+    {
+        int x = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).x / tamañoCelda);
+        int y = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).y / tamañoCelda);
+        return new Coord(x, y);
+    }
+
+    Vector3 CoordToWorldPoint(Coord tile)
+    {
+        return new Vector3(-nodosX / 2 + tamañoCelda / 2 + tile.tileX, 2, -nodosY / 2 + tamañoCelda / 2 + tile.tileY);
+    }
+
+    //Se usa para calcular la circunferencia de tierra excavada
+    void ExcavarCirculo(Coord c, int r)
+    {
+        for (int x = -r; x <= r; x++)
+        {
+            for (int y = -r; y <= r; y++)
+            {
+                if (x * x + y * y <= r * r)
+                {
+                    int dibujarX = c.tileX + x;
+                    int dibujarY = c.tileY + y;
+                    if (EstaDentroDelMapa(dibujarX, dibujarY))
+                    {
+                        mapa[dibujarX, dibujarY] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    void ExcavarCirculo2(Coord center, int radio)
+    {
+		//TODO este radio pa q?
+        //radio += 10;
+
+        int px, nx, py, ny, bordeY;
+
+        for (int i = 0; i <= radio; i++)
+        {
+            for (i = 0; i <= radio; i++)
+            {
+                // r = Sqrt(x*x + y*y) => y = Sqrt(r*r - x*x)
+                bordeY = Mathf.RoundToInt(Mathf.Sqrt(radio * radio - i * i));
+                for (int j = 0; j <= bordeY; j++)
+                {
+                    px = center.tileX + i;
+                    nx = center.tileX - i;
+                    py = center.tileY + j;
+                    ny = center.tileY - j;
+
+					if (EstaDentroDelMapa(px, py))
+                    	mapa[px, py] = 0;
+					if (EstaDentroDelMapa(nx, py))
+                    	mapa[nx, py] = 0;
+					if (EstaDentroDelMapa(px, ny))
+                    	mapa[px, ny] = 0;
+					if (EstaDentroDelMapa(nx, ny))
+                    	mapa[nx, ny] = 0;
+                }
+            }
+        }
+    }
+
+    //Verifica si el tile actual se encuentra dentro del mapa
+    bool EstaDentroDelMapa(int x, int y)
+    {
+        return x >= 0 && x < nodosX && y >= 0 && y < nodosY;
+    }
+
+
+    //Se utiliza para suavizar la randomizacion en Cellular Automata
+    void SuavizarMapa(int iteraciones = 0)
+    {
+        while (iteraciones > 0)
+        {
+            for (int x = 0; x < nodosX; x++)
+            {
+                for (int y = 0; y < nodosY; y++)
+                {
+                    int cuadrosRellenosVecinos = ContarRellenoCercanos(x, y);
+
+                    if (cuadrosRellenosVecinos > 4)
+                        mapa[x, y] = 1;
+                    else if (cuadrosRellenosVecinos < 4)
+                        mapa[x, y] = 0;
+                }
+            }
+            iteraciones--;
+        }
+    }
+
+    //Cuanta la cantidad de casilleros rellenos vacios
+    int ContarRellenoCercanos(int grillaX, int grillaY)
+    {
+        int cantidadRellenos = 0;
+        for (int vecinoX = grillaX - 1; vecinoX <= grillaX + 1; vecinoX++)
+        {
+            for (int vecinoY = grillaY - 1; vecinoY <= grillaY + 1; vecinoY++)
+            {
+                if (EstaDentroDelMapa(vecinoX, vecinoY))
+                {
+                    if (vecinoX != grillaX || vecinoY != grillaY)
+                    {
+                        cantidadRellenos += mapa[vecinoX, vecinoY];
+                    }
+                }
+                else
+                {
+                    cantidadRellenos++;
+                }
+            }
+        }
+        return cantidadRellenos;
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (EditorApplication.isPlaying) return;
+
+        int nodosXgz = Mathf.RoundToInt(anchoAproximado / tamañoCelda);
+        int nodosYgz = Mathf.RoundToInt(altoAproximado / tamañoCelda);
+        float mapaAncho = nodosXgz * tamañoCelda;
+        float mapaAlto = nodosYgz * tamañoCelda;
+
+        Rect rect = new Rect();
+
+        rect.xMin = -mapaAncho / 2 + tamañoCelda / 2;
+        rect.xMax = mapaAncho / 2 - tamañoCelda / 2;
+        rect.yMin = -mapaAlto / 2 + tamañoCelda / 2;
+        rect.yMax = mapaAlto / 2 - tamañoCelda / 2;
+        rect.center = transform.position;
+
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        collider.size = rect.size;
+        collider.offset = Vector3.zero;
+
+
+        Vector3[] verts = new Vector3[]
+        {
+            new Vector3(rect.xMin, rect.yMin, transform.position.z),
+            new Vector3(rect.xMin, rect.yMax, transform.position.z),
+            new Vector3(rect.xMax, rect.yMax, transform.position.z),
+            new Vector3(rect.xMax, rect.yMin, transform.position.z)
+        };
+        Handles.DrawSolidRectangleWithOutline(verts, new Color(1f, 1f, 1f, .3f), Color.cyan);
+    }
+#endif
+}

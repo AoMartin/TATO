@@ -97,7 +97,7 @@ public class GroundController : MonoBehaviour {
 		//PolygonCollider2D newcolli = gameObject.AddComponent<PolygonCollider2D>();
 		//newcolli.isTrigger = true; //TRIGGER VERSION
 	}
-
+//TODO j
 	//1- Calcular posicion dentro de la textura del circulo a excavar 
 	//2- Calcular la posicion e identificar cada uno de los pixeles que conforman el circulo
 	//3- Encontrar la posicion de los pixeles dentro del array de la textura que devuelve GetPixels()
