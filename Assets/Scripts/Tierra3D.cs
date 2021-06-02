@@ -122,8 +122,11 @@ public class Tierra3D : MonoBehaviour
         {
             for (int y = 0; y < nodosY; y++)
             {
-                // 1 - Relleno, 0 - Vacio
-                mapa[x, y] = 1;
+                // 1 - Relleno, 0 - Vacio //Si es parte del borde del mapa va vacio
+                if(y==0 || y== nodosY-1 || x==0 || x==nodosX-1 )
+                    mapa[x, y] = 0;
+                else 
+                    mapa[x, y] = 1;
             }
         }
     }

@@ -317,11 +317,11 @@ public class GeneradorDeTierra : MonoBehaviour
             // 4 puntos:
             case 15:
                 MeshDesdePuntos(celda.arribaIzq, celda.arribaDer, celda.abajoDer, celda.abajoIzq);
-				//
+				/*
                 verticesChequeados.Add(celda.arribaIzq.indiceVertice);
                 verticesChequeados.Add(celda.arribaDer.indiceVertice);
                 verticesChequeados.Add(celda.abajoDer.indiceVertice);
-                verticesChequeados.Add(celda.abajoIzq.indiceVertice);
+                verticesChequeados.Add(celda.abajoIzq.indiceVertice);*/
                 break;
         }
 
@@ -383,56 +383,6 @@ public class GeneradorDeTierra : MonoBehaviour
             trianguloDiccionario.Add(indiceVerticeKey, listaTriangulos);
         }
     }
-
-    void BordearLimites(){
-        for (int x = 0; x < grilla.celdas.GetLength(0); x++)
-        {
-            if(!grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.activo) return;
-            grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.posicion );
-
-            List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.indiceVertice);
-            outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaDer.indiceVertice);
-        }
-
-        for (int y = grilla.celdas.GetLength(1)-1; y == -1; y--)
-        {
-            if(!grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.activo) return;
-            grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.posicion );
-
-            List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.indiceVertice);
-            outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[grilla.celdas.GetLength(0)-1,y].arribaDer.indiceVertice);
-        }
-
-        for (int x = grilla.celdas.GetLength(0); x == -1; x--)
-        {
-            if(!grilla.celdas[x,0].abajoIzq.activo) return;
-            grilla.celdas[x,0].abajoIzq.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[x,0].abajoIzq.posicion );
-
-            List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[x,0].abajoIzq.indiceVertice);
-            outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[x,0].abajoDer.indiceVertice);
-        }
-
-        for (int y = 0; y < grilla.celdas.GetLength(1); y++)
-        {
-            if(!grilla.celdas[0,y].abajoDer.activo) return;
-            grilla.celdas[0,y].abajoDer.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[0,y].abajoDer.posicion );
-
-            List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[0,y].abajoDer.indiceVertice);
-            outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[0,y].arribaDer.indiceVertice);
-        }
-    }
     
     void CalcularBordesDelMesh()
     {
@@ -454,8 +404,7 @@ public class GeneradorDeTierra : MonoBehaviour
             }
         }
 
-        //BordearLimites();
-        //SimplificarBordesDelMesh();
+        SimplificarBordesDelMesh();
     }
 
     void SimplificarBordesDelMesh()
