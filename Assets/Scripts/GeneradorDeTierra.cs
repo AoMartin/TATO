@@ -3,30 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GeneradorDeTierra : MonoBehaviour
-{
-    //		# + #      Marching Squares
-    //  	+ 	+		# : NodoEsquina
-    //		# + #		+ : Nodo
+{	
+	//		# + #      Marching Squares
+	//  	+ 	+		# : NodoEsquina
+	//		# + #		+ : Nodo
 
     public class Nodo
     {
         public Vector3 posicion;
         public int indiceVertice = -1;
-        public bool esBorde;
 
         public Nodo(Vector3 _pos)
         {
             posicion = _pos;
-            esBorde = _pos.x == BordesMapa.xMin || _pos.x == BordesMapa.xMax 
-                    || _pos.y == BordesMapa.yMin || _pos.y == BordesMapa.yMax;
         }
-    }
-
-    public static class BordesMapa{
-        public static float xMax;
-        public static float xMin;
-        public static float yMax;
-        public static float yMin;
     }
 
     public class NodoEsquina : Nodo
@@ -46,7 +36,7 @@ public class GeneradorDeTierra : MonoBehaviour
     {
         public NodoEsquina arribaIzq, arribaDer, abajoDer, abajoIzq;
         public Nodo centroArriba, centroDer, centroAbajo, centroIzq;
-        //Suma un 1 binario dependiendo del nodoEsquina activo
+		//Suma un 1 binario dependiendo del nodoEsquina activo
         public int configuracion;
 
         public Celda(NodoEsquina _topLeft, NodoEsquina _topRight, NodoEsquina _bottomRight, NodoEsquina _bottomLeft)
@@ -66,7 +56,7 @@ public class GeneradorDeTierra : MonoBehaviour
             if (arribaDer.activo)	//0100
                 configuracion += 4;
             if (abajoDer.activo)	//0010
-                configuracion += 2;
+                configuracion += 2;	
             if (abajoIzq.activo)	//0001
                 configuracion += 1;
         }
@@ -83,13 +73,8 @@ public class GeneradorDeTierra : MonoBehaviour
             int nodoCantidadY = mapa.GetLength(1);
             float mapaAncho = nodoCantidadX * tamañoCelda;
             float mapaAlto = nodoCantidadY * tamañoCelda;
-
+            
             NodoEsquina[,] nodoEsquinas = new NodoEsquina[nodoCantidadX, nodoCantidadY];
-
-            BordesMapa.xMax= mapaAncho / 2 + (nodoCantidadX-1) + tamañoCelda / 2;
-            BordesMapa.xMin= -mapaAncho / 2 + tamañoCelda / 2;
-            BordesMapa.yMax= mapaAlto / 2 + (nodoCantidadY-1) + tamañoCelda / 2;
-            BordesMapa.yMin= -mapaAlto / 2 + tamañoCelda / 2;
 
             for (int x = 0; x < nodoCantidadX; x++)
             {
@@ -112,39 +97,30 @@ public class GeneradorDeTierra : MonoBehaviour
     }
 
     //Los triangulos se usaran para armar el mesh de la tierra dependiendo de los vertices activos de las celdas
-    //Los lados de un traingulo que no sean compartidos por otro triangulo serán usados como bordes - outlines
+	//Los lados de un traingulo que no sean compartidos por otro triangulo serán usados como bordes - outlines
     struct Triangulo
     {
         public int indiceVerticeA;
         public int indiceVerticeB;
         public int indiceVerticeC;
         int[] vertices;
-        public bool[] verticeEsBorde;
-        public bool contieneVerticesDelBorde;
 
-        public Triangulo(Nodo a, Nodo b, Nodo c)
+        public Triangulo(int a, int b, int c)
         {
-            indiceVerticeA = a.indiceVertice;
-            indiceVerticeB = b.indiceVertice;
-            indiceVerticeC = c.indiceVertice;
+            indiceVerticeA = a;
+            indiceVerticeB = b;
+            indiceVerticeC = c;
 
             vertices = new int[3];
-            vertices[0] = a.indiceVertice;
-            vertices[1] = b.indiceVertice;
-            vertices[2] = c.indiceVertice;
-
-            verticeEsBorde = new bool[3];
-            verticeEsBorde[0] = a.esBorde;
-            verticeEsBorde[1] = b.esBorde;
-            verticeEsBorde[2] = c.esBorde;
-            contieneVerticesDelBorde = a.esBorde || b.esBorde || c.esBorde;
+            vertices[0] = a;
+            vertices[1] = b;
+            vertices[2] = c;
         }
 
         //Indexador del array de vertices
         public int this[int i]
         {
-            get
-            {
+            get{
                 return vertices[i];
             }
         }
@@ -155,10 +131,11 @@ public class GeneradorDeTierra : MonoBehaviour
         }
     }
 
+
     public Grilla grilla;
-    public MeshFilter tierra;
+	public MeshFilter tierra;
     public MeshFilter paredes;
-    public float alturaParedes = 5;
+	public float alturaParedes = 5;
 
     List<Vector3> vertices;
     List<int> triangulos;
@@ -221,15 +198,14 @@ public class GeneradorDeTierra : MonoBehaviour
         mesh.triangles = triangulos.ToArray();
         mesh.RecalculateNormals();
 
-        CalcularTierraUVs(mesh, mapa, tamañoCelda);
+		CalcularTierraUVs( mesh, mapa, tamañoCelda);
 
         GenerarParedesMesh();
     }
 
     //TODO arreglar esto
-    void CalcularTierraUVs(Mesh mesh, int[,] mapa, float tamañoCelda)
-    {
-        int tileAmountX = 2;
+	void CalcularTierraUVs(Mesh mesh, int[,] mapa, float tamañoCelda){
+		int tileAmountX = 2;
         int tileAmountY = 3;
         Vector2[] uvs = new Vector2[vertices.Count];
         for (int i = 0; i < vertices.Count; i++)
@@ -241,7 +217,7 @@ public class GeneradorDeTierra : MonoBehaviour
             uvs[i].y = porcentajeY;
         }
         mesh.uv = uvs;
-    }
+	}
 
     void GenerarParedesMesh()
     {
@@ -282,7 +258,7 @@ public class GeneradorDeTierra : MonoBehaviour
     }
 
     //En base a los nodos activos, como se deberan armar los triangulos para el mesh de la celda actual
-    //Se recorre la configuracion en sentido horario desde arriba y de derecha a izquierda
+	//Se recorre la configuracion en sentido horario desde arriba y de derecha a izquierda
     void TriangularCelda(Celda celda)
     {
         switch (celda.configuracion)
@@ -341,7 +317,7 @@ public class GeneradorDeTierra : MonoBehaviour
             // 4 puntos:
             case 15:
                 MeshDesdePuntos(celda.arribaIzq, celda.arribaDer, celda.abajoDer, celda.abajoIzq);
-                //
+				//
                 verticesChequeados.Add(celda.arribaIzq.indiceVertice);
                 verticesChequeados.Add(celda.arribaDer.indiceVertice);
                 verticesChequeados.Add(celda.abajoDer.indiceVertice);
@@ -380,19 +356,18 @@ public class GeneradorDeTierra : MonoBehaviour
 
     void CrearTriangulo(Nodo a, Nodo b, Nodo c)
     {
-        //Para armar el mesh del mapa
         triangulos.Add(a.indiceVertice);
         triangulos.Add(b.indiceVertice);
         triangulos.Add(c.indiceVertice);
 
-        //Para luego calcular outlines, aca y lo que sigue del diccionario
-        Triangulo triangulo = new Triangulo(a, b, c);
+        //Para luego calcular outlines aca y lo que sigue del diccionario
+        Triangulo triangulo = new Triangulo(a.indiceVertice, b.indiceVertice, c.indiceVertice);
 
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeA, triangulo);
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeB, triangulo);
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeC, triangulo);
     }
-
+   
     //*- OUTLINES
     //Arma el diccionario para guardar los triangulos en base a un indice
     void AgregarTrianguloAlDiccionario(int indiceVerticeKey, Triangulo triangulo)
@@ -409,57 +384,56 @@ public class GeneradorDeTierra : MonoBehaviour
         }
     }
 
-    void BordearLimites()
-    {
+    void BordearLimites(){
         for (int x = 0; x < grilla.celdas.GetLength(0); x++)
         {
-            if (!grilla.celdas[x, grilla.celdas.GetLength(1) - 1].arribaIzq.activo) return;
-            grilla.celdas[x, grilla.celdas.GetLength(1) - 1].arribaIzq.indiceVertice = vertices.Count;
-            vertices.Add(grilla.celdas[x, grilla.celdas.GetLength(1) - 1].arribaIzq.posicion);
+            if(!grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.activo) return;
+            grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.indiceVertice = vertices.Count;
+            vertices.Add( grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.posicion );
 
             List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[x, grilla.celdas.GetLength(1) - 1].arribaIzq.indiceVertice);
+            newOutline.Add(grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.indiceVertice);
             outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[x, grilla.celdas.GetLength(1) - 1].arribaDer.indiceVertice);
+            outlines[outlines.Count - 1].Add(grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaDer.indiceVertice);
         }
 
-        for (int y = grilla.celdas.GetLength(1) - 1; y == -1; y--)
+        for (int y = grilla.celdas.GetLength(1)-1; y == -1; y--)
         {
-            if (!grilla.celdas[grilla.celdas.GetLength(0) - 1, y].abajoDer.activo) return;
-            grilla.celdas[grilla.celdas.GetLength(0) - 1, y].abajoDer.indiceVertice = vertices.Count;
-            vertices.Add(grilla.celdas[grilla.celdas.GetLength(0) - 1, y].abajoDer.posicion);
+            if(!grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.activo) return;
+            grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.indiceVertice = vertices.Count;
+            vertices.Add( grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.posicion );
 
             List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[grilla.celdas.GetLength(0) - 1, y].abajoDer.indiceVertice);
+            newOutline.Add(grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.indiceVertice);
             outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[grilla.celdas.GetLength(0) - 1, y].arribaDer.indiceVertice);
+            outlines[outlines.Count - 1].Add(grilla.celdas[grilla.celdas.GetLength(0)-1,y].arribaDer.indiceVertice);
         }
 
         for (int x = grilla.celdas.GetLength(0); x == -1; x--)
         {
-            if (!grilla.celdas[x, 0].abajoIzq.activo) return;
-            grilla.celdas[x, 0].abajoIzq.indiceVertice = vertices.Count;
-            vertices.Add(grilla.celdas[x, 0].abajoIzq.posicion);
+            if(!grilla.celdas[x,0].abajoIzq.activo) return;
+            grilla.celdas[x,0].abajoIzq.indiceVertice = vertices.Count;
+            vertices.Add( grilla.celdas[x,0].abajoIzq.posicion );
 
             List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[x, 0].abajoIzq.indiceVertice);
+            newOutline.Add(grilla.celdas[x,0].abajoIzq.indiceVertice);
             outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[x, 0].abajoDer.indiceVertice);
+            outlines[outlines.Count - 1].Add(grilla.celdas[x,0].abajoDer.indiceVertice);
         }
 
         for (int y = 0; y < grilla.celdas.GetLength(1); y++)
         {
-            if (!grilla.celdas[0, y].abajoDer.activo) return;
-            grilla.celdas[0, y].abajoDer.indiceVertice = vertices.Count;
-            vertices.Add(grilla.celdas[0, y].abajoDer.posicion);
+            if(!grilla.celdas[0,y].abajoDer.activo) return;
+            grilla.celdas[0,y].abajoDer.indiceVertice = vertices.Count;
+            vertices.Add( grilla.celdas[0,y].abajoDer.posicion );
 
             List<int> newOutline = new List<int>();
-            newOutline.Add(grilla.celdas[0, y].abajoDer.indiceVertice);
+            newOutline.Add(grilla.celdas[0,y].abajoDer.indiceVertice);
             outlines.Add(newOutline);
-            outlines[outlines.Count - 1].Add(grilla.celdas[0, y].arribaDer.indiceVertice);
+            outlines[outlines.Count - 1].Add(grilla.celdas[0,y].arribaDer.indiceVertice);
         }
     }
-
+    
     void CalcularBordesDelMesh()
     {
         for (int verticeIndice = 0; verticeIndice < vertices.Count; verticeIndice++)
@@ -548,12 +522,6 @@ public class GeneradorDeTierra : MonoBehaviour
 
         for (int i = 0; i < triangulosContienenVerticeA.Count; i++)
         {
-            //Si contiene un vertice del borde del mapa siempre va a ser outline
-            if(triangulosContienenVerticeA[i].contieneVerticesDelBorde)
-            {
-                triangulosCompartidos-=1;
-            }
-                        
             if (triangulosContienenVerticeA[i].Contains(verticeB))
             {
                 triangulosCompartidos++;
