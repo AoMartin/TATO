@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement;
 
 public class EnemigoMovimiento : MonoBehaviour
 {
@@ -56,13 +56,13 @@ public class EnemigoMovimiento : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other) {
         if(other.gameObject.CompareTag("Player")){
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);/*
             #if UNITY_EDITOR || UNITY_STANDALONE
                 MenuDebug.MD.Restart();
 
             #elif UNITY_ANDROID
                 MenuDebug.MD.RestartMobile();
-            #endif
+            #endif*/
         }
     }
 }
