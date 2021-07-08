@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GroundController : MonoBehaviour {
+public class Tierra2D : MonoBehaviour {
 
 	private SpriteRenderer spriteRenderer;
 	private float widthWorld, heightWorld;

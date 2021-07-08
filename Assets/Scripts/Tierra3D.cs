@@ -18,11 +18,12 @@ public class Tierra3D : MonoBehaviour
     }
     static Transform tato;
     static CircleCollider2D tatu_collider;
-    public static int fps_para_excavar = 7;
+    public static int fps_para_excavar = 3;
     bool excavando = false;
 
     private void Awake()
     {
+        Application.targetFrameRate = 30;
         //groundController = GetComponent<GroundController>();
         if (tatu_collider == null) tatu_collider = GameObject.FindGameObjectWithTag("Player").GetComponent<CircleCollider2D>();
         tato = tatu_collider.transform;
@@ -103,7 +104,7 @@ public class Tierra3D : MonoBehaviour
         RellenarMapa();
         //SuavizarMapa();
 
-        GeneradorDeTierra meshGen = GetComponent<GeneradorDeTierra>();
+        Tierra3DGenerador meshGen = GetComponent<Tierra3DGenerador>();
         meshGen.GenerarTierraMesh(mapa, tamañoCelda);
     }
 
@@ -111,7 +112,7 @@ public class Tierra3D : MonoBehaviour
     {
 		//TODO suavizar comentado
         SuavizarMapa(suavizado);
-        GeneradorDeTierra meshGen = GetComponent<GeneradorDeTierra>();
+        Tierra3DGenerador meshGen = GetComponent<Tierra3DGenerador>();
         meshGen.GenerarTierraMesh(mapa, tamañoCelda);
 
     }

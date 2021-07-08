@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Tierra : MonoBehaviour
 {
-    GroundController groundController;
+    Tierra2D groundController;
     static CircleCollider2D tatu_collider;
     public static int fps_para_excavar = 7;
     bool excavando = false;
 
     private void Awake() {
-        groundController = GetComponent<GroundController>();
+        groundController = GetComponent<Tierra2D>();
         if(tatu_collider == null) tatu_collider = GameObject.FindGameObjectWithTag("Player").GetComponent<CircleCollider2D>();
     }
 

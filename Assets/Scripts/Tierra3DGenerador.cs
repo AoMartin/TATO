@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GeneradorDeTierra : MonoBehaviour
+public class Tierra3DGenerador : MonoBehaviour
 {	
 	//		# + #      Marching Squares
 	//  	+ 	+		# : NodoEsquina
