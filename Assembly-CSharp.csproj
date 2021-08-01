@@ -633,6 +633,9 @@
     <Reference Include="UnityEditor.UI">
         <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualStudio.Editor">
+        <HintPath>C:/Users/m91_a/Documents/Unity Projects/TATO/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
