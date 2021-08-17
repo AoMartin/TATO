@@ -4,7 +4,7 @@ using UnityEditor;
 public class TierraBloque : MonoBehaviour
 {
 
-    struct Coord
+    public struct Coord
     {
         public int tileX;
         public int tileY;
@@ -15,57 +15,7 @@ public class TierraBloque : MonoBehaviour
             tileY = y;
         }
     }
-    static Transform tato;
-    static CircleCollider2D tatu_collider;
-    public static int fps_para_excavar = 3;
-    bool excavando = false;
-
-    private void Awake()
-    {
-        Application.targetFrameRate = 30;
-        //groundController = GetComponent<GroundController>();
-        if (tatu_collider == null) tatu_collider = GameObject.FindGameObjectWithTag("Player").GetComponent<CircleCollider2D>();
-        tato = tatu_collider.transform;
-    }
-
-    private void Update()
-    {
-        if (excavando && Time.frameCount % fps_para_excavar == 0)
-        {
-            Coord tatoCoord = PuntoToCoord(tato.position);
-            //Debug.Log($"{tatoCoord.tileX}:{tatoCoord.tileY}");
-            ExcavarCirculo2(tatoCoord, Mathf.RoundToInt(tatu_collider.radius / tamañoCelda));
-
-            //Una vez se ha excavado un circulo se debe regenerar el mesh
-            RegenerarMapa();
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            excavando = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            excavando = false;
-        }
-    }
-
-
-    [Min(1)]
-    public int anchoAproximado;
-    [Min(1)]
-    public int altoAproximado;
-    [Min(0.1f)]
-    public float tamañoCelda = 1;
-	[Min(0)]
-	public int suavizado = 0;
+    
 
     int nodosX;
     int nodosY;
@@ -93,7 +43,7 @@ public class TierraBloque : MonoBehaviour
     TierraGenerador meshGen;
 
     //Se usa para crear el generador del mapa de nodos, los mesh y asignarlos
-    void Inicializar(Material mat_tierra, Material mat_paredes,float alturaParedes){
+    public void Inicializar(Material mat_tierra, Material mat_paredes,float alturaParedes){
         if(null == meshGen){
 
             GameObject tierra = new GameObject("tierra");
@@ -107,6 +57,7 @@ public class TierraBloque : MonoBehaviour
             tierraRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
             tierraRenderer.receiveShadows = false;
             tierraRenderer.motionVectorGenerationMode = UnityEngine.MotionVectorGenerationMode.ForceNoMotion;
+            tierraRenderer.material = mat_tierra;
             
             GameObject paredes = new GameObject("paredes");
             paredes.transform.position = transform.position;
@@ -119,34 +70,35 @@ public class TierraBloque : MonoBehaviour
             paredesRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
             paredesRenderer.receiveShadows = false;
             paredesRenderer.motionVectorGenerationMode = UnityEngine.MotionVectorGenerationMode.ForceNoMotion;
+            paredesRenderer.material = mat_paredes;
 
             meshGen = new TierraGenerador(tierraFilter,paredesFilter,alturaParedes);
         }
     }
 
-    public void GenerarMapa()
+    public void GenerarMapa(float anchoAproximado, float altoAproximado, float tamanioCelda)
     {
-        nodosX = Mathf.RoundToInt(anchoAproximado / tamañoCelda);
-        nodosY = Mathf.RoundToInt(altoAproximado / tamañoCelda);
+        nodosX = Mathf.RoundToInt(anchoAproximado / tamanioCelda);
+        nodosY = Mathf.RoundToInt(altoAproximado / tamanioCelda);
         mapa = new int[nodosX, nodosY];
 
-        float mapaAncho = nodosX * tamañoCelda;
-        float mapaAlto = nodosY * tamañoCelda;
-        float bordeIzquierdo = -mapaAncho / 2 + tamañoCelda / 2;
-        float bordeInferior = -mapaAlto / 2 + tamañoCelda / 2;
+        float mapaAncho = nodosX * tamanioCelda;
+        float mapaAlto = nodosY * tamanioCelda;
+        float bordeIzquierdo = -mapaAncho / 2 + tamanioCelda / 2;
+        float bordeInferior = -mapaAlto / 2 + tamanioCelda / 2;
         origenCoordenadas = new Vector3(bordeIzquierdo, bordeInferior, 0.0f);
 
         RellenarMapa();
         //SuavizarMapa();
 
-        meshGen.GenerarTierraMesh(mapa, tamañoCelda);
+        meshGen.GenerarTierraMesh(mapa, tamanioCelda);
     }
 
-    public void RegenerarMapa()
+    public void RegenerarMapa(int suavizado, float tamanioCelda)
     {
 		//TODO suavizar comentado
         SuavizarMapa(suavizado);
-        meshGen.GenerarTierraMesh(mapa, tamañoCelda);
+        meshGen.GenerarTierraMesh(mapa, tamanioCelda);
     }
 
     void RellenarMapa()
@@ -164,20 +116,20 @@ public class TierraBloque : MonoBehaviour
         }
     }
 
-    Coord PuntoToCoord(Vector3 punto)
+    Coord PuntoToCoord(Vector3 punto, float tamanioCelda)
     {
-        int x = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).x / tamañoCelda);
-        int y = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).y / tamañoCelda);
+        int x = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).x / tamanioCelda);
+        int y = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).y / tamanioCelda);
         return new Coord(x, y);
     }
 
-    Vector3 CoordToWorldPoint(Coord tile)
+    Vector3 CoordToWorldPoint(Coord tile, float tamanioCelda)
     {
-        return new Vector3(-nodosX / 2 + tamañoCelda / 2 + tile.tileX, 2, -nodosY / 2 + tamañoCelda / 2 + tile.tileY);
+        return new Vector3(-nodosX / 2 + tamanioCelda / 2 + tile.tileX, 2, -nodosY / 2 + tamanioCelda / 2 + tile.tileY);
     }
 
     //Se usa para calcular la circunferencia de tierra excavada
-    void ExcavarCirculo(Coord c, int r)
+    public void ExcavarCirculo(Coord c, int r)
     {
         for (int x = -r; x <= r; x++)
         {
@@ -281,6 +233,7 @@ public class TierraBloque : MonoBehaviour
         return cantidadRellenos;
     }
 
+/*
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -314,4 +267,6 @@ public class TierraBloque : MonoBehaviour
         Handles.DrawSolidRectangleWithOutline(verts, new Color(1f, 1f, 1f, .3f), Color.cyan);
     }
 #endif
+*/
+
 }
