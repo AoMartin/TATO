@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
-public class TierraGenerador 
-{	
-	//		# + #      Marching Squares
-	//  	+ 	+		# : NodoEsquina
-	//		# + #		+ : Nodo
+public class TierraGenerador
+{
+    //		# + #      Marching Squares
+    //  	+ 	+		# : NodoEsquina
+    //		# + #		+ : Nodo
 
     public class Nodo
     {
@@ -35,7 +36,7 @@ public class TierraGenerador
     {
         public NodoEsquina arribaIzq, arribaDer, abajoDer, abajoIzq;
         public Nodo centroArriba, centroDer, centroAbajo, centroIzq;
-		//Suma un 1 binario dependiendo del nodoEsquina activo
+        //Suma un 1 binario dependiendo del nodoEsquina activo
         public int configuracion;
 
         public Celda(NodoEsquina _topLeft, NodoEsquina _topRight, NodoEsquina _bottomRight, NodoEsquina _bottomLeft)
@@ -55,7 +56,7 @@ public class TierraGenerador
             if (arribaDer.activo)	//0100
                 configuracion += 4;
             if (abajoDer.activo)	//0010
-                configuracion += 2;	
+                configuracion += 2;
             if (abajoIzq.activo)	//0001
                 configuracion += 1;
         }
@@ -72,14 +73,14 @@ public class TierraGenerador
             int nodoCantidadY = mapa.GetLength(1);
             float mapaAncho = nodoCantidadX * tamañoCelda;
             float mapaAlto = nodoCantidadY * tamañoCelda;
-            
+
             NodoEsquina[,] nodoEsquinas = new NodoEsquina[nodoCantidadX, nodoCantidadY];
 
             for (int x = 0; x < nodoCantidadX; x++)
             {
                 for (int y = 0; y < nodoCantidadY; y++)
                 {
-                    Vector3 pos = new Vector3(-mapaAncho / 2 + x * tamañoCelda + tamañoCelda / 2, 0, -mapaAlto / 2 + y * tamañoCelda + tamañoCelda / 2);
+                    Vector3 pos = new Vector3((-mapaAncho / 2) + (x * tamañoCelda) + (tamañoCelda / 2), 0, (-mapaAlto / 2) + (y * tamañoCelda) + (tamañoCelda / 2));
                     nodoEsquinas[x, y] = new NodoEsquina(pos, mapa[x, y] == 1, tamañoCelda);
                 }
             }
@@ -96,7 +97,7 @@ public class TierraGenerador
     }
 
     //Los triangulos se usaran para armar el mesh de la tierra dependiendo de los vertices activos de las celdas
-	//Los lados de un traingulo que no sean compartidos por otro triangulo serán usados como bordes - outlines
+    //Los lados de un traingulo que no sean compartidos por otro triangulo serán usados como bordes - outlines
     struct Triangulo
     {
         public int indiceVerticeA;
@@ -119,7 +120,8 @@ public class TierraGenerador
         //Indexador del array de vertices
         public int this[int i]
         {
-            get{
+            get
+            {
                 return vertices[i];
             }
         }
@@ -131,9 +133,9 @@ public class TierraGenerador
     }
 
     Grilla grilla;
-	MeshFilter tierra;
+    MeshFilter tierra;
     MeshFilter paredes;
-	float alturaParedes = 2;
+    float alturaParedes = 2;
 
     List<Vector3> vertices;
     List<int> triangulos;
@@ -142,7 +144,8 @@ public class TierraGenerador
     List<List<int>> outlines = new List<List<int>>();
     HashSet<int> verticesChequeados = new HashSet<int>();
 
-    public TierraGenerador(MeshFilter tierraFilter, MeshFilter paredesFilter, float alturaParedes){
+    public TierraGenerador(MeshFilter tierraFilter, MeshFilter paredesFilter, float alturaParedes)
+    {
         this.tierra = tierraFilter;
         this.paredes = paredesFilter;
         this.alturaParedes = alturaParedes;
@@ -201,14 +204,15 @@ public class TierraGenerador
         mesh.triangles = triangulos.ToArray();
         mesh.RecalculateNormals();
 
-		CalcularTierraUVs( mesh, mapa, tamañoCelda);
+        CalcularTierraUVs(mesh, mapa, tamañoCelda);
 
         GenerarParedesMesh();
     }
 
     //TODO arreglar esto
-	void CalcularTierraUVs(Mesh mesh, int[,] mapa, float tamañoCelda){
-		int tileAmountX = 2;
+    void CalcularTierraUVs(Mesh mesh, int[,] mapa, float tamañoCelda)
+    {
+        int tileAmountX = 2;
         int tileAmountY = 3;
         Vector2[] uvs = new Vector2[vertices.Count];
         for (int i = 0; i < vertices.Count; i++)
@@ -220,7 +224,7 @@ public class TierraGenerador
             uvs[i].y = porcentajeY;
         }
         mesh.uv = uvs;
-	}
+    }
 
     void GenerarParedesMesh()
     {
@@ -254,6 +258,7 @@ public class TierraGenerador
         }
         paredesMesh.vertices = verticesParedes.ToArray();
         paredesMesh.triangles = triangulosParedes.ToArray();
+        paredesMesh.triangles = paredesMesh.triangles.Reverse().ToArray();
         paredes.mesh = paredesMesh;
 
         //MeshCollider wallCollider = gameObject.AddComponent<MeshCollider>();
@@ -261,7 +266,7 @@ public class TierraGenerador
     }
 
     //En base a los nodos activos, como se deberan armar los triangulos para el mesh de la celda actual
-	//Se recorre la configuracion en sentido horario desde arriba y de derecha a izquierda
+    //Se recorre la configuracion en sentido horario desde arriba y de derecha a izquierda
     void TriangularCelda(Celda celda)
     {
         switch (celda.configuracion)
@@ -320,7 +325,7 @@ public class TierraGenerador
             // 4 puntos:
             case 15:
                 MeshDesdePuntos(celda.arribaIzq, celda.arribaDer, celda.abajoDer, celda.abajoIzq);
-				/*
+                /*
                 verticesChequeados.Add(celda.arribaIzq.indiceVertice);
                 verticesChequeados.Add(celda.arribaDer.indiceVertice);
                 verticesChequeados.Add(celda.abajoDer.indiceVertice);
@@ -370,7 +375,7 @@ public class TierraGenerador
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeB, triangulo);
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeC, triangulo);
     }
-   
+
     //*- OUTLINES
     //Arma el diccionario para guardar los triangulos en base a un indice
     void AgregarTrianguloAlDiccionario(int indiceVerticeKey, Triangulo triangulo)
@@ -386,7 +391,7 @@ public class TierraGenerador
             trianguloDiccionario.Add(indiceVerticeKey, listaTriangulos);
         }
     }
-    
+
     void CalcularBordesDelMesh()
     {
         for (int verticeIndice = 0; verticeIndice < vertices.Count; verticeIndice++)

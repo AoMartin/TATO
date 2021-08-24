@@ -54,7 +54,6 @@ public class TierraBase : MonoBehaviour
     public float alturaParedes;
 
     TierraBloque[] bloquesTierra;
-    int bloquesOffset = 2;
 
     static Transform tato;
     static CircleCollider2D tatu_collider;
@@ -69,27 +68,26 @@ public class TierraBase : MonoBehaviour
     }
 
     public void Generar(){
-        float origen_x = transform.position.x + altoAproximado /2 +1;
-        float origen_y = transform.position.y + altoAproximado /2;
-        Vector3 origen = new Vector3(origen_x - bloquesOffset/2, origen_y, 0f);
+        
+        int nodos = Mathf.RoundToInt(altoAproximado / tamanioCelda);
+        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / (nodos * tamanioCelda)); 
+        cantidadBloques = anchoAproximado % (nodos * tamanioCelda) == 0 ? cantidadBloques : cantidadBloques +1;
+
+        float origen_x = transform.position.x + (nodos * tamanioCelda) /2;
+        float origen_y = transform.position.y + (nodos * tamanioCelda) /2;
+        Vector3 origen = new Vector3(origen_x, origen_y, 0f);
         Vector3 offsetX = Vector3.zero;
-
-        //int nodosX = Mathf.RoundToInt(anchoAproximado / tamanioCelda);
-        //int nodosY = Mathf.RoundToInt(altoAproximado / tamanioCelda);
-
-        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / altoAproximado);
-        cantidadBloques = anchoAproximado % altoAproximado == 0 ? cantidadBloques : cantidadBloques +1;
-
+        
         bloquesTierra = new TierraBloque[cantidadBloques]; 
         for(int i = 0; i < cantidadBloques;i++){
             GameObject nuevoBloque = new GameObject("BloqueTierra");
-            offsetX.x = (altoAproximado * i);
+            offsetX.x = (nodos * tamanioCelda * i);
             nuevoBloque.transform.position = origen + offsetX;
             nuevoBloque.transform.parent = gameObject.transform;
 
             bloquesTierra[i] = nuevoBloque.AddComponent<TierraBloque>();
             bloquesTierra[i].Inicializar(materialTierra,materialParedes,alturaParedes);
-            bloquesTierra[i].GenerarMapa(altoAproximado + bloquesOffset, altoAproximado + bloquesOffset, tamanioCelda);
+            bloquesTierra[i].GenerarMapa(nodos , nodos , tamanioCelda);
         }
     }
 
@@ -131,41 +129,21 @@ public class TierraBase : MonoBehaviour
 
         BoxCollider2D collider = GetComponent<BoxCollider2D>();
 
-        //El alto del collider minimo debe ser igual al tamanio de la celda
-        float colliderAltoRedondeado = Mathf.RoundToInt(collider.size.y);
-        float altoCeldaNormalizado = colliderAltoRedondeado < tamanioCelda ? tamanioCelda : colliderAltoRedondeado;
+        anchoAproximado = (int) collider.size.x;  
+        altoAproximado = (int) collider.size.y;   
 
-        collider.size = new Vector3 (Mathf.RoundToInt(collider.size.x), altoCeldaNormalizado, 0f);
+        int nodos = Mathf.RoundToInt(altoAproximado / tamanioCelda); 
+        
+        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / (nodos * tamanioCelda)); 
+        cantidadBloques = anchoAproximado % (nodos * tamanioCelda) == 0 ? cantidadBloques : cantidadBloques +1;
 
-        if(anchoAproximado < altoAproximado){
-            Debug.LogWarning("El ancho minimo debe ser igual al alto!");
-            anchoAproximado = altoAproximado;
-            collider.size = new Vector3 (anchoAproximado, altoCeldaNormalizado, 0f);
-        }
+        anchoAproximado = Mathf.RoundToInt(altoAproximado * cantidadBloques);
 
-        anchoAproximado = (int) collider.size.x;
-        altoAproximado = (int) collider.size.y;
-
-        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / altoAproximado);
-        cantidadBloques = anchoAproximado % altoAproximado == 0 ? cantidadBloques : cantidadBloques +1;
-
-        anchoAproximado = altoAproximado * cantidadBloques;
-/*
-        int nodosXgz = Mathf.RoundToInt(anchoAproximado / tamanioCelda);
-        int nodosYgz = Mathf.RoundToInt(altoAproximado / tamanioCelda);
-        float mapaAncho = nodosXgz * tamanioCelda;
-        float mapaAlto = nodosYgz * tamanioCelda;
-*/
         float mapaAncho = anchoAproximado;
         float mapaAlto = altoAproximado;
 
         Rect rect = new Rect();
-/*
-        rect.xMin = -mapaAncho / 2 + tamanioCelda / 2 + bloquesOffset/2;
-        rect.xMax = mapaAncho / 2 - tamanioCelda / 2 + bloquesOffset/2;
-        rect.yMin = -mapaAlto / 2 + tamanioCelda / 2;
-        rect.yMax = mapaAlto / 2 - tamanioCelda / 2;
-*/
+
         rect.xMin = transform.position.x;
         rect.xMax = transform.position.x + mapaAncho;
         rect.yMin = transform.position.y;
@@ -174,7 +152,6 @@ public class TierraBase : MonoBehaviour
         rect.center += new Vector2(rect.size.x/2,rect.size.y/2);
 
         collider.offset = new Vector3(collider.size.x/2,collider.size.y/2,0f);
-        //collider.size = rect.size;
 
         Vector3[] verts = new Vector3[]
         {

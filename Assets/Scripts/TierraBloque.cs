@@ -76,16 +76,16 @@ public class TierraBloque : MonoBehaviour
         }
     }
 
-    public void GenerarMapa(float anchoAproximado, float altoAproximado, float tamanioCelda)
+    public void GenerarMapa(int nX, int nY, float tamanioCelda)
     {
-        nodosX = Mathf.RoundToInt(anchoAproximado / tamanioCelda);
-        nodosY = Mathf.RoundToInt(altoAproximado / tamanioCelda);
+        nodosX = nX+1;
+        nodosY = nY+1;
         mapa = new int[nodosX, nodosY];
-
+        
         float mapaAncho = nodosX * tamanioCelda;
         float mapaAlto = nodosY * tamanioCelda;
-        float bordeIzquierdo = -mapaAncho / 2 + tamanioCelda / 2;
-        float bordeInferior = -mapaAlto / 2 + tamanioCelda / 2;
+        float bordeIzquierdo = (-mapaAncho / 2) + (tamanioCelda / 2);
+        float bordeInferior =( -mapaAlto / 2) + (tamanioCelda / 2);
         origenCoordenadas = new Vector3(bordeIzquierdo, bordeInferior, 0.0f);
 
         RellenarMapa();
@@ -97,7 +97,7 @@ public class TierraBloque : MonoBehaviour
     public void RegenerarMapa(int suavizado, float tamanioCelda)
     {
 		//TODO suavizar comentado
-        SuavizarMapa(suavizado);
+        //SuavizarMapa(suavizado);
         meshGen.GenerarTierraMesh(mapa, tamanioCelda);
     }
 
@@ -106,11 +106,12 @@ public class TierraBloque : MonoBehaviour
         for (int x = 0; x < nodosX; x++)
         {
             for (int y = 0; y < nodosY; y++)
-            {
+            {/*
                 // 1 - Relleno, 0 - Vacio //Si es parte del borde del mapa va vacio
-                if(y==0 || y== nodosY-1 || x==0 || x==nodosX-1 )
+                if(y==0 || y== nodosY-1 || x==0 || x==nodosX-1 ) 
+                //&&! ((y==0 && x==0)||(y==nodosY-1 && x==nodosX-1)||(y==0 && x==nodosX-1)||(y==nodosY-1 && x==0)))
                     mapa[x, y] = 0;
-                else 
+                else */
                     mapa[x, y] = 1;
             }
         }
