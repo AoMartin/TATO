@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
+[ExecuteInEditMode]
 public class TierraBloque : MonoBehaviour
 {
 
@@ -19,6 +20,7 @@ public class TierraBloque : MonoBehaviour
 
     int nodosX;
     int nodosY;
+    [SerializeField, HideInInspector]
     int[,] mapa;
     Vector3 origenCoordenadas;
 
@@ -39,7 +41,7 @@ public class TierraBloque : MonoBehaviour
                 RegenerarMapa();
             }
         }*/
-
+    [SerializeField, HideInInspector]
     TierraGenerador meshGen;
 
     //Se usa para crear el generador del mapa de nodos, los mesh y asignarlos
@@ -72,7 +74,8 @@ public class TierraBloque : MonoBehaviour
             paredesRenderer.motionVectorGenerationMode = UnityEngine.MotionVectorGenerationMode.ForceNoMotion;
             paredesRenderer.material = mat_paredes;
 
-            meshGen = new TierraGenerador(tierraFilter,paredesFilter,alturaParedes);
+            meshGen = gameObject.AddComponent<TierraGenerador>();
+            meshGen.NewTierraGenerador(tierraFilter,paredesFilter,alturaParedes);
         }
     }
 
@@ -117,14 +120,14 @@ public class TierraBloque : MonoBehaviour
         }
     }
 
-    Coord PuntoToCoord(Vector3 punto, float tamanioCelda)
+    public Coord PuntoToCoord(Vector3 punto, float tamanioCelda)
     {
         int x = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).x / tamanioCelda);
         int y = Mathf.FloorToInt((punto - transform.TransformPoint(origenCoordenadas)).y / tamanioCelda);
         return new Coord(x, y);
     }
 
-    Vector3 CoordToWorldPoint(Coord tile, float tamanioCelda)
+    public Vector3 CoordToWorldPoint(Coord tile, float tamanioCelda)
     {
         return new Vector3(-nodosX / 2 + tamanioCelda / 2 + tile.tileX, 2, -nodosY / 2 + tamanioCelda / 2 + tile.tileY);
     }
@@ -149,7 +152,7 @@ public class TierraBloque : MonoBehaviour
         }
     }
 
-    void ExcavarCirculo2(Coord center, int radio)
+    public void ExcavarCirculo2(Coord center, int radio)
     {
 		//TODO este radio pa q?
         //radio += 10;

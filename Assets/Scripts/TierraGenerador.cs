@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TierraGenerador
+[ExecuteInEditMode]
+public class TierraGenerador : MonoBehaviour
 {
     //		# + #      Marching Squares
     //  	+ 	+		# : NodoEsquina
@@ -132,19 +133,28 @@ public class TierraGenerador
         }
     }
 
+    [SerializeField, HideInInspector]
     Grilla grilla;
+    [SerializeField, HideInInspector]
     MeshFilter tierra;
+    [SerializeField, HideInInspector]
     MeshFilter paredes;
+    [SerializeField, HideInInspector]
     float alturaParedes = 2;
 
+    [SerializeField, HideInInspector]
     List<Vector3> vertices;
+    [SerializeField, HideInInspector]
     List<int> triangulos;
 
+    [SerializeField, HideInInspector]
     Dictionary<int, List<Triangulo>> trianguloDiccionario = new Dictionary<int, List<Triangulo>>();
+    [SerializeField, HideInInspector]
     List<List<int>> outlines = new List<List<int>>();
+    [SerializeField, HideInInspector]
     HashSet<int> verticesChequeados = new HashSet<int>();
 
-    public TierraGenerador(MeshFilter tierraFilter, MeshFilter paredesFilter, float alturaParedes)
+    public void NewTierraGenerador(MeshFilter tierraFilter, MeshFilter paredesFilter, float alturaParedes)
     {
         this.tierra = tierraFilter;
         this.paredes = paredesFilter;

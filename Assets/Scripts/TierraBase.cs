@@ -11,26 +11,34 @@ public class ObjectBuilderEditor : Editor
         DrawDefaultInspector();
 
         TierraBase tierraBase = (TierraBase)target;
-        if(tierraBase.gameObject.transform.childCount == 0){
-            if(GUILayout.Button("Generar Mapa")){
+        if (tierraBase.gameObject.transform.childCount == 0)
+        {
+            if (GUILayout.Button("Generar Mapa"))
+            {
                 tierraBase.Generar();
             }
-        }else{
-            if(GUILayout.Button("Limpiar Mapa")){
+        }
+        else
+        {
+            if (GUILayout.Button("Limpiar Mapa"))
+            {
                 int childCount = tierraBase.gameObject.transform.childCount;
-                for(int i = childCount-1; i > -1; i--){
+                for (int i = childCount - 1; i > -1; i--)
+                {
                     DestroyImmediate(tierraBase.gameObject.transform.GetChild(i).gameObject);
                 }
             }
-            if(GUILayout.Button("Volver a Generar Mapa")){
+            if (GUILayout.Button("Volver a Generar Mapa"))
+            {
                 int childCount = tierraBase.gameObject.transform.childCount;
-                for(int i = childCount-1; i > -1; i--){
+                for (int i = childCount - 1; i > -1; i--)
+                {
                     DestroyImmediate(tierraBase.gameObject.transform.GetChild(i).gameObject);
                 }
                 tierraBase.Generar();
             }
         }
-        
+
     }
 }
 
@@ -39,26 +47,29 @@ public class ObjectBuilderEditor : Editor
 [RequireComponent(typeof(BoxCollider2D))]
 public class TierraBase : MonoBehaviour
 {
-    
+
     int anchoAproximado;
     int altoAproximado;
-    
+
     [Min(0.1f)]
     public float tamanioCelda = 1;
-	[Min(0)]
-	public int suavizado = 0;
+    [Min(0)]
+    public int suavizado = 0;
 
     public Material materialTierra;
     public Material materialParedes;
     [Min(1)]
     public float alturaParedes;
 
+    [SerializeField, HideInInspector]
     TierraBloque[] bloquesTierra;
 
     static Transform tato;
     static CircleCollider2D tatu_collider;
     public static int fps_para_excavar = 3;
     bool excavando = false;
+    [SerializeField, HideInInspector] 
+    float medioBloque;
 
     private void Awake()
     {
@@ -67,43 +78,70 @@ public class TierraBase : MonoBehaviour
         tato = tatu_collider.transform;
     }
 
-    public void Generar(){
-        
-        int nodos = Mathf.RoundToInt(altoAproximado / tamanioCelda);
-        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / (nodos * tamanioCelda)); 
-        cantidadBloques = anchoAproximado % (nodos * tamanioCelda) == 0 ? cantidadBloques : cantidadBloques +1;
+    public void Generar()
+    {
 
-        float origen_x = transform.position.x + (nodos * tamanioCelda) /2;
-        float origen_y = transform.position.y + (nodos * tamanioCelda) /2;
+        int nodos = Mathf.RoundToInt(altoAproximado / tamanioCelda);
+        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / (nodos * tamanioCelda));
+        cantidadBloques = anchoAproximado % (nodos * tamanioCelda) == 0 ? cantidadBloques : cantidadBloques + 1;
+
+        float origen_x = transform.position.x + (nodos * tamanioCelda) / 2;
+        float origen_y = transform.position.y + (nodos * tamanioCelda) / 2;
         Vector3 origen = new Vector3(origen_x, origen_y, 0f);
         Vector3 offsetX = Vector3.zero;
-        
-        bloquesTierra = new TierraBloque[cantidadBloques]; 
-        for(int i = 0; i < cantidadBloques;i++){
+
+        bloquesTierra = new TierraBloque[cantidadBloques];
+        medioBloque = (nodos * tamanioCelda) / 2;
+
+        for (int i = 0; i < cantidadBloques; i++)
+        {
             GameObject nuevoBloque = new GameObject("BloqueTierra");
             offsetX.x = (nodos * tamanioCelda * i);
             nuevoBloque.transform.position = origen + offsetX;
             nuevoBloque.transform.parent = gameObject.transform;
 
             bloquesTierra[i] = nuevoBloque.AddComponent<TierraBloque>();
-            bloquesTierra[i].Inicializar(materialTierra,materialParedes,alturaParedes);
-            bloquesTierra[i].GenerarMapa(nodos , nodos , tamanioCelda);
+            bloquesTierra[i].Inicializar(materialTierra, materialParedes, alturaParedes);
+            bloquesTierra[i].GenerarMapa(nodos, nodos, tamanioCelda);
         }
     }
 
-/*
+
     private void Update()
     {
         if (excavando && Time.frameCount % fps_para_excavar == 0)
         {
-            TierraBloque.Coord tatoCoord = PuntoToCoord(tato.position);
-            //Debug.Log($"{tatoCoord.tileX}:{tatoCoord.tileY}");
-            ExcavarCirculo2(tatoCoord, Mathf.RoundToInt(tatu_collider.radius / tamañoCelda));
+            float r1 = (tato.position.x - tatu_collider.radius );
+            float r2 = (tato.position.x + tatu_collider.radius );
 
-            //Una vez se ha excavado un circulo se debe regenerar el mesh
-            RegenerarMapa();
+            foreach (TierraBloque bloque in bloquesTierra)
+            {
+                Debug.Log($"r1:{r1},r2:{r2}");
+                Debug.Log($"bordeInicial:{bloque.transform.position.x - medioBloque},bordeFinal:{bloque.transform.position.x + medioBloque}");
+                
+                if( //Si cualquiera de los 2 bordes del radio de TATO se encuentra dentro del bloque se lo debe excavar
+                    //R1 ESTA ADENTRO DEL BLOQUE
+                    (
+                           r1 >= ( bloque.transform.position.x - medioBloque )
+                        && r1 <= ( bloque.transform.position.x + medioBloque )
+                    ) 
+                    //R2 ESTA ADENTRO DEL BLOQUE
+                    ||(
+                           r2 >= ( bloque.transform.position.x - medioBloque )
+                        && r2 <= ( bloque.transform.position.x + medioBloque )
+                    )
+                ){
+                    Debug.Log("EXCAVAR!!!");
+                    TierraBloque.Coord tatoCoord = bloque.PuntoToCoord(tato.position,tamanioCelda);
+                    //Debug.Log($"{tatoCoord.tileX}:{tatoCoord.tileY}");
+                    bloque.ExcavarCirculo2(tatoCoord, Mathf.RoundToInt(tatu_collider.radius / tamanioCelda));
+
+                    //Una vez se ha excavado un circulo se debe regenerar el mesh
+                    bloque.RegenerarMapa(0,tamanioCelda);
+                }
+            }
         }
-    }*/
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -129,13 +167,13 @@ public class TierraBase : MonoBehaviour
 
         BoxCollider2D collider = GetComponent<BoxCollider2D>();
 
-        anchoAproximado = (int) collider.size.x;  
-        altoAproximado = (int) collider.size.y;   
+        anchoAproximado = (int)collider.size.x;
+        altoAproximado = (int)collider.size.y;
 
-        int nodos = Mathf.RoundToInt(altoAproximado / tamanioCelda); 
-        
-        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / (nodos * tamanioCelda)); 
-        cantidadBloques = anchoAproximado % (nodos * tamanioCelda) == 0 ? cantidadBloques : cantidadBloques +1;
+        int nodos = Mathf.RoundToInt(altoAproximado / tamanioCelda);
+
+        int cantidadBloques = Mathf.RoundToInt(anchoAproximado / (nodos * tamanioCelda));
+        cantidadBloques = anchoAproximado % (nodos * tamanioCelda) == 0 ? cantidadBloques : cantidadBloques + 1;
 
         anchoAproximado = Mathf.RoundToInt(altoAproximado * cantidadBloques);
 
@@ -149,9 +187,9 @@ public class TierraBase : MonoBehaviour
         rect.yMin = transform.position.y;
         rect.yMax = transform.position.y + mapaAlto;
         rect.center = transform.position;
-        rect.center += new Vector2(rect.size.x/2,rect.size.y/2);
+        rect.center += new Vector2(rect.size.x / 2, rect.size.y / 2);
 
-        collider.offset = new Vector3(collider.size.x/2,collider.size.y/2,0f);
+        collider.offset = new Vector3(collider.size.x / 2, collider.size.y / 2, 0f);
 
         Vector3[] verts = new Vector3[]
         {
