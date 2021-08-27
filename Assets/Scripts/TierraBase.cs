@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(TierraBase))]
@@ -22,19 +20,11 @@ public class ObjectBuilderEditor : Editor
         {
             if (GUILayout.Button("Limpiar Mapa"))
             {
-                int childCount = tierraBase.gameObject.transform.childCount;
-                for (int i = childCount - 1; i > -1; i--)
-                {
-                    DestroyImmediate(tierraBase.gameObject.transform.GetChild(i).gameObject);
-                }
+                tierraBase.LimpiarMapa();
             }
             if (GUILayout.Button("Volver a Generar Mapa"))
             {
-                int childCount = tierraBase.gameObject.transform.childCount;
-                for (int i = childCount - 1; i > -1; i--)
-                {
-                    DestroyImmediate(tierraBase.gameObject.transform.GetChild(i).gameObject);
-                }
+                tierraBase.LimpiarMapa();
                 tierraBase.Generar();
             }
         }
@@ -47,10 +37,6 @@ public class ObjectBuilderEditor : Editor
 [RequireComponent(typeof(BoxCollider2D))]
 public class TierraBase : MonoBehaviour
 {
-
-    int anchoAproximado;
-    int altoAproximado;
-
     [Min(0.1f)]
     public float tamanioCelda = 1;
     [Min(0)]
@@ -61,21 +47,32 @@ public class TierraBase : MonoBehaviour
     [Min(1)]
     public float alturaParedes;
 
-    [SerializeField, HideInInspector]
-    TierraBloque[] bloquesTierra;
+    [SerializeField, HideInInspector] int anchoAproximado;
+    [SerializeField, HideInInspector] int altoAproximado;
+    [SerializeField, HideInInspector] TierraBloque[] bloquesTierra;
 
-    static Transform tato;
-    static CircleCollider2D tatu_collider;
-    public static int fps_para_excavar = 3;
-    bool excavando = false;
-    [SerializeField, HideInInspector] 
-    float medioBloque;
+    [SerializeField, HideInInspector] Transform tato;
+    [SerializeField, HideInInspector] CircleCollider2D tatu_collider;
+    [SerializeField, HideInInspector] int fps_para_excavar = 3;
+    [SerializeField, HideInInspector] bool excavando = false;
+    [SerializeField, HideInInspector] float medioBloque;
 
     private void Awake()
     {
-        //Application.targetFrameRate = 30;
+        LimpiarMapa();
+        Generar();
+        
         if (tatu_collider == null) tatu_collider = GameObject.FindGameObjectWithTag("Player").GetComponent<CircleCollider2D>();
         tato = tatu_collider.transform;
+    }
+
+    public void LimpiarMapa()
+    {
+        int childCount = gameObject.transform.childCount;
+        for (int i = childCount - 1; i > -1; i--)
+        {
+            DestroyImmediate(gameObject.transform.GetChild(i).gameObject);
+        }
     }
 
     public void Generar()
@@ -106,38 +103,33 @@ public class TierraBase : MonoBehaviour
         }
     }
 
-
     private void Update()
     {
         if (excavando && Time.frameCount % fps_para_excavar == 0)
         {
-            float r1 = (tato.position.x - tatu_collider.radius );
-            float r2 = (tato.position.x + tatu_collider.radius );
+            float r1 = (tato.position.x - tatu_collider.radius);
+            float r2 = (tato.position.x + tatu_collider.radius);
 
             foreach (TierraBloque bloque in bloquesTierra)
             {
-                Debug.Log($"r1:{r1},r2:{r2}");
-                Debug.Log($"bordeInicial:{bloque.transform.position.x - medioBloque},bordeFinal:{bloque.transform.position.x + medioBloque}");
-                
-                if( //Si cualquiera de los 2 bordes del radio de TATO se encuentra dentro del bloque se lo debe excavar
-                    //R1 ESTA ADENTRO DEL BLOQUE
+                if ( //Si cualquiera de los 2 bordes del radio de TATO se encuentra dentro del bloque se lo debe excavar
+                     //R1 ESTA ADENTRO DEL BLOQUE
                     (
-                           r1 >= ( bloque.transform.position.x - medioBloque )
-                        && r1 <= ( bloque.transform.position.x + medioBloque )
-                    ) 
-                    //R2 ESTA ADENTRO DEL BLOQUE
-                    ||(
-                           r2 >= ( bloque.transform.position.x - medioBloque )
-                        && r2 <= ( bloque.transform.position.x + medioBloque )
+                           r1 >= (bloque.transform.position.x - medioBloque)
+                        && r1 <= (bloque.transform.position.x + medioBloque)
                     )
-                ){
-                    Debug.Log("EXCAVAR!!!");
-                    TierraBloque.Coord tatoCoord = bloque.PuntoToCoord(tato.position,tamanioCelda);
-                    //Debug.Log($"{tatoCoord.tileX}:{tatoCoord.tileY}");
-                    bloque.ExcavarCirculo2(tatoCoord, Mathf.RoundToInt(tatu_collider.radius / tamanioCelda));
+                    //R2 ESTA ADENTRO DEL BLOQUE
+                    || (
+                           r2 >= (bloque.transform.position.x - medioBloque)
+                        && r2 <= (bloque.transform.position.x + medioBloque)
+                    )
+                )
+                {
+                    TierraBloque.Coord tatoCoord = bloque.PuntoToCoord(tato.position, tamanioCelda);
+                    bloque.ExcavarCirculo(tatoCoord, Mathf.RoundToInt(tatu_collider.radius / tamanioCelda));
 
                     //Una vez se ha excavado un circulo se debe regenerar el mesh
-                    bloque.RegenerarMapa(0,tamanioCelda);
+                    bloque.RegenerarMapa(0, tamanioCelda);
                 }
             }
         }
@@ -145,18 +137,12 @@ public class TierraBase : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-        {
-            excavando = true;
-        }
+        if (other.CompareTag("Player")) { excavando = true; }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-        {
-            excavando = false;
-        }
+        if (other.CompareTag("Player")) { excavando = false; }
     }
 
 
@@ -167,6 +153,7 @@ public class TierraBase : MonoBehaviour
 
         BoxCollider2D collider = GetComponent<BoxCollider2D>();
 
+        collider.size = new Vector2(Mathf.RoundToInt(collider.size.x), Mathf.RoundToInt(collider.size.y));
         anchoAproximado = (int)collider.size.x;
         altoAproximado = (int)collider.size.y;
 

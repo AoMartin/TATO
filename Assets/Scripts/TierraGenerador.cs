@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 
 [ExecuteInEditMode]
 public class TierraGenerador : MonoBehaviour
@@ -133,26 +133,17 @@ public class TierraGenerador : MonoBehaviour
         }
     }
 
-    [SerializeField, HideInInspector]
-    Grilla grilla;
-    [SerializeField, HideInInspector]
-    MeshFilter tierra;
-    [SerializeField, HideInInspector]
-    MeshFilter paredes;
-    [SerializeField, HideInInspector]
-    float alturaParedes = 2;
-
-    [SerializeField, HideInInspector]
-    List<Vector3> vertices;
-    [SerializeField, HideInInspector]
-    List<int> triangulos;
-
-    [SerializeField, HideInInspector]
-    Dictionary<int, List<Triangulo>> trianguloDiccionario = new Dictionary<int, List<Triangulo>>();
-    [SerializeField, HideInInspector]
-    List<List<int>> outlines = new List<List<int>>();
-    [SerializeField, HideInInspector]
-    HashSet<int> verticesChequeados = new HashSet<int>();
+    [SerializeField, HideInInspector] Grilla grilla;
+    [SerializeField, HideInInspector] MeshFilter tierra;
+    [SerializeField, HideInInspector] MeshFilter paredes;
+    [SerializeField, HideInInspector] float alturaParedes = 2;
+ 
+    [SerializeField, HideInInspector] List<Vector3> vertices;
+    [SerializeField, HideInInspector] List<int> triangulos;
+ 
+    [SerializeField, HideInInspector] Dictionary<int, List<Triangulo>> trianguloDiccionario = new Dictionary<int, List<Triangulo>>();
+    [SerializeField, HideInInspector] List<List<int>> outlines = new List<List<int>>();
+    [SerializeField, HideInInspector] HashSet<int> verticesChequeados = new HashSet<int>();
 
     public void NewTierraGenerador(MeshFilter tierraFilter, MeshFilter paredesFilter, float alturaParedes)
     {
@@ -168,36 +159,8 @@ public class TierraGenerador : MonoBehaviour
         verticesChequeados.Clear();
 
         grilla = new Grilla(mapa, tamañoCelda);
-
         vertices = new List<Vector3>();
         triangulos = new List<int>();
-
-        //Bordes
-        /*
-        for (int x = 0; x < grilla.celdas.GetLength(0); x++)
-        {
-            grilla.celdas[x,0].abajoIzq.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[x,0].abajoIzq.posicion );
-            //grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaDer.indiceVertice = vertices.Count;
-            //vertices.Add( grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaDer.posicion );
-        }
-        for (int x = 0; x < grilla.celdas.GetLength(0); x++)
-        {
-            grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[x,grilla.celdas.GetLength(1)-1].arribaIzq.posicion );
-        }
-        for (int y = 0; y < grilla.celdas.GetLength(1); y++)
-        {
-            grilla.celdas[0,y].abajoDer.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[0,y].abajoDer.posicion );
-        }
-        for (int y = 0; y < grilla.celdas.GetLength(1); y++)
-        {
-            grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.indiceVertice = vertices.Count;
-            vertices.Add( grilla.celdas[grilla.celdas.GetLength(0)-1,y].abajoDer.posicion );
-        }
-        //Bordes END
-        */
 
         for (int x = 0; x < grilla.celdas.GetLength(0); x++)
         {
@@ -215,7 +178,6 @@ public class TierraGenerador : MonoBehaviour
         mesh.RecalculateNormals();
 
         CalcularTierraUVs(mesh, mapa, tamañoCelda);
-
         GenerarParedesMesh();
     }
 
@@ -238,9 +200,6 @@ public class TierraGenerador : MonoBehaviour
 
     void GenerarParedesMesh()
     {
-        //MeshCollider currentCollider = GetComponent<MeshCollider>();
-        //Destroy(currentCollider);
-
         CalcularBordesDelMesh();
 
         List<Vector3> verticesParedes = new List<Vector3>();
@@ -268,11 +227,8 @@ public class TierraGenerador : MonoBehaviour
         }
         paredesMesh.vertices = verticesParedes.ToArray();
         paredesMesh.triangles = triangulosParedes.ToArray();
-        paredesMesh.triangles = paredesMesh.triangles.Reverse().ToArray();
+        //paredesMesh.triangles = paredesMesh.triangles.Reverse().ToArray();
         paredes.mesh = paredesMesh;
-
-        //MeshCollider wallCollider = gameObject.AddComponent<MeshCollider>();
-        //wallCollider.sharedMesh = wallMesh;
     }
 
     //En base a los nodos activos, como se deberan armar los triangulos para el mesh de la celda actual
@@ -335,14 +291,8 @@ public class TierraGenerador : MonoBehaviour
             // 4 puntos:
             case 15:
                 MeshDesdePuntos(celda.arribaIzq, celda.arribaDer, celda.abajoDer, celda.abajoIzq);
-                /*
-                verticesChequeados.Add(celda.arribaIzq.indiceVertice);
-                verticesChequeados.Add(celda.arribaDer.indiceVertice);
-                verticesChequeados.Add(celda.abajoDer.indiceVertice);
-                verticesChequeados.Add(celda.abajoIzq.indiceVertice);*/
                 break;
         }
-
     }
 
     void MeshDesdePuntos(params Nodo[] puntos)
@@ -357,7 +307,6 @@ public class TierraGenerador : MonoBehaviour
             CrearTriangulo(puntos[0], puntos[3], puntos[4]);
         if (puntos.Length >= 6)
             CrearTriangulo(puntos[0], puntos[4], puntos[5]);
-
     }
 
     void AsignarVertices(Nodo[] puntos)
@@ -380,7 +329,6 @@ public class TierraGenerador : MonoBehaviour
 
         //Para luego calcular outlines aca y lo que sigue del diccionario
         Triangulo triangulo = new Triangulo(a.indiceVertice, b.indiceVertice, c.indiceVertice);
-
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeA, triangulo);
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeB, triangulo);
         AgregarTrianguloAlDiccionario(triangulo.indiceVerticeC, triangulo);
@@ -421,7 +369,6 @@ public class TierraGenerador : MonoBehaviour
                 }
             }
         }
-
         SimplificarBordesDelMesh();
     }
 
@@ -478,7 +425,6 @@ public class TierraGenerador : MonoBehaviour
                 }
             }
         }
-
         return -1;
     }
 

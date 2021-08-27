@@ -16,33 +16,12 @@ public class TierraBloque : MonoBehaviour
             tileY = y;
         }
     }
-    
 
-    int nodosX;
-    int nodosY;
-    [SerializeField, HideInInspector]
-    int[,] mapa;
-    Vector3 origenCoordenadas;
-
-/*
-    void Start()
-    {
-        GenerarMapa();
-    }
-*/
-
-    /*
-        void Update() {
-            if (Input.GetMouseButtonDown(0)) {
-                Coord posicionMouse = PuntoToCoord(Input.mousePosition.x,Input.mousePosition.y);
-                ExcavarCirculo(posicionMouse,3);
-
-                //Una vez se ha excavado un circulo se debe regenerar el mesh
-                RegenerarMapa();
-            }
-        }*/
-    [SerializeField, HideInInspector]
-    TierraGenerador meshGen;
+    [SerializeField, HideInInspector] int nodosX;
+    [SerializeField, HideInInspector] int nodosY;
+    [SerializeField, HideInInspector] int[,] mapa;
+    [SerializeField, HideInInspector] Vector3 origenCoordenadas;
+    [SerializeField, HideInInspector] TierraGenerador meshGen;
 
     //Se usa para crear el generador del mapa de nodos, los mesh y asignarlos
     public void Inicializar(Material mat_tierra, Material mat_paredes,float alturaParedes){
@@ -92,15 +71,13 @@ public class TierraBloque : MonoBehaviour
         origenCoordenadas = new Vector3(bordeIzquierdo, bordeInferior, 0.0f);
 
         RellenarMapa();
-        //SuavizarMapa();
-
         meshGen.GenerarTierraMesh(mapa, tamanioCelda);
     }
 
     public void RegenerarMapa(int suavizado, float tamanioCelda)
     {
 		//TODO suavizar comentado
-        //SuavizarMapa(suavizado);
+        SuavizarMapa(suavizado);
         meshGen.GenerarTierraMesh(mapa, tamanioCelda);
     }
 
@@ -109,13 +86,8 @@ public class TierraBloque : MonoBehaviour
         for (int x = 0; x < nodosX; x++)
         {
             for (int y = 0; y < nodosY; y++)
-            {/*
-                // 1 - Relleno, 0 - Vacio //Si es parte del borde del mapa va vacio
-                if(y==0 || y== nodosY-1 || x==0 || x==nodosX-1 ) 
-                //&&! ((y==0 && x==0)||(y==nodosY-1 && x==nodosX-1)||(y==0 && x==nodosX-1)||(y==nodosY-1 && x==0)))
-                    mapa[x, y] = 0;
-                else */
-                    mapa[x, y] = 1;
+            {
+                mapa[x, y] = 1;
             }
         }
     }
@@ -154,9 +126,6 @@ public class TierraBloque : MonoBehaviour
 
     public void ExcavarCirculo2(Coord center, int radio)
     {
-		//TODO este radio pa q?
-        //radio += 10;
-
         int px, nx, py, ny, bordeY;
 
         for (int i = 0; i <= radio; i++)
@@ -190,7 +159,6 @@ public class TierraBloque : MonoBehaviour
     {
         return x >= 0 && x < nodosX && y >= 0 && y < nodosY;
     }
-
 
     //Se utiliza para suavizar la randomizacion en Cellular Automata
     void SuavizarMapa(int iteraciones = 0)
@@ -236,41 +204,4 @@ public class TierraBloque : MonoBehaviour
         }
         return cantidadRellenos;
     }
-
-/*
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        if (EditorApplication.isPlaying) return;
-
-        int nodosXgz = Mathf.RoundToInt(anchoAproximado / tamañoCelda);
-        int nodosYgz = Mathf.RoundToInt(altoAproximado / tamañoCelda);
-        float mapaAncho = nodosXgz * tamañoCelda;
-        float mapaAlto = nodosYgz * tamañoCelda;
-
-        Rect rect = new Rect();
-
-        rect.xMin = -mapaAncho / 2 + tamañoCelda / 2;
-        rect.xMax = mapaAncho / 2 - tamañoCelda / 2;
-        rect.yMin = -mapaAlto / 2 + tamañoCelda / 2;
-        rect.yMax = mapaAlto / 2 - tamañoCelda / 2;
-        rect.center = transform.position;
-
-        BoxCollider2D collider = GetComponent<BoxCollider2D>();
-        collider.size = rect.size;
-        collider.offset = Vector3.zero;
-
-
-        Vector3[] verts = new Vector3[]
-        {
-            new Vector3(rect.xMin, rect.yMin, transform.position.z),
-            new Vector3(rect.xMin, rect.yMax, transform.position.z),
-            new Vector3(rect.xMax, rect.yMax, transform.position.z),
-            new Vector3(rect.xMax, rect.yMin, transform.position.z)
-        };
-        Handles.DrawSolidRectangleWithOutline(verts, new Color(1f, 1f, 1f, .3f), Color.cyan);
-    }
-#endif
-*/
-
 }
