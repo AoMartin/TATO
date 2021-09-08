@@ -9,6 +9,7 @@ public class Tato_Control : MonoBehaviour
     Rigidbody2D rigidbody;
     bool mover;
     float mitadPantalla;
+    public float potenciaExcavar = 1.0f;
     public float aceleracion = 1.0f;
     public float maximaVelocidad = 5.0f;
     Vector3 movem;
@@ -25,11 +26,11 @@ public class Tato_Control : MonoBehaviour
 
 #if UNITY_EDITOR || UNITY_STANDALONE
 
-        movem.y = Input.GetAxis("Vertical");
+        movem.y = Input.GetAxis("Vertical") * potenciaExcavar;
         //movem.x = Input.GetAxis("Horizontal");
         if (Input.GetButton("Vertical"))
         {
-            if(!mover) movem.x = 1.0f;
+            //if(!mover) movem.x = 1.0f;
             if(movem.x < maximaVelocidad)
                 movem.x += aceleracion * Time.deltaTime;
             else
