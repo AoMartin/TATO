@@ -48,7 +48,7 @@ public class EnemigoMovimiento : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Collisioner")
+        if (collision.tag == "Collisioner" && collision.transform.parent == transform.parent)
         {
             mirandoDerecha = !mirandoDerecha; 
         }
