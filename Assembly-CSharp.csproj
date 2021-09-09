@@ -58,9 +58,6 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\EnemigoMovimiento.cs" />
     <Compile Include="Assets\Scripts\MenuDebug.cs" />
-    <Compile Include="Assets\Scripts\Obsoleto\TatoMoveTest.cs" />
-    <Compile Include="Assets\Scripts\Obsoleto\TatoMoveTest_ArribaAbajo.cs" />
-    <Compile Include="Assets\Scripts\Obsoleto\TatoMoveTest_Constante.cs" />
     <Compile Include="Assets\Scripts\Tato_Control.cs" />
     <Compile Include="Assets\Scripts\TierraBase.cs" />
     <Compile Include="Assets\Scripts\TierraBloque.cs" />
@@ -70,6 +67,9 @@
     <Compile Include="Assets\Scripts\Version 2D\TierrasBlandas.cs" />
     <Compile Include="Assets\Scripts\Version 3D1\Tierra3D.cs" />
     <Compile Include="Assets\Scripts\Version 3D1\Tierra3DGenerador.cs" />
+    <Compile Include="Assets\Scripts\_obsoleto\TatoMoveTest.cs" />
+    <Compile Include="Assets\Scripts\_obsoleto\TatoMoveTest_ArribaAbajo.cs" />
+    <Compile Include="Assets\Scripts\_obsoleto\TatoMoveTest_Constante.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
