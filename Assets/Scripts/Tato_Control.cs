@@ -4,17 +4,27 @@ using UnityEngine;
 
 public class Tato_Control : MonoBehaviour
 {
-    public float freno = 1.0f;
-    float freno_actual;
+    
     Rigidbody2D rigidbody;
     bool mover;
-    float mitadPantalla;
+    Vector3 movem;
+
+    [Header("Movimiento")]
+    public float freno = 1.0f;
+    float freno_actual;
     public float potenciaExcavar = 1.0f;
     public float aceleracion = 1.0f;
     public float maximaVelocidad = 5.0f;
-    Vector3 movem;
-    public float velocidad = 1.0f;
     
+    public float velocidad = 1.0f;
+    float mitadPantalla;
+
+    [Header("Animacion")]
+    public GameObject modelo3dTato;
+    public Animator animator;
+    public bool rotarAlMoverse = false;
+    public float velocidadRotacion = 1.0f;
+
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
@@ -70,9 +80,38 @@ public class Tato_Control : MonoBehaviour
         }
 
 #endif
-
+        Animar();
+        if(rotarAlMoverse) RotarAlMover();
     }
 
+    void Animar()
+    {
+        if(rigidbody.velocity.sqrMagnitude > 0.0f)
+        {
+            animator.SetBool("corriendo", true);
+        }
+        else
+        {
+            animator.SetBool("corriendo", false);
+        }
+    }
+
+    void RotarAlMover()
+    {
+        if (movem != Vector3.zero)
+        {
+            /*float angle = Mathf.Atan2(rigidbody.velocity.y,rigidbody.velocity.x) * Mathf.Rad2Deg;
+            modelo3dTato.transform.rotation *= Quaternion.AngleAxis(angle * velocidadRotacion  * Time.deltaTime, Vector3.forward);*//*
+            Quaternion rotation = Quaternion.LookRotation(rigidbody.velocity,transform.right);
+            modelo3dTato.transform.rotation = Quaternion.Slerp(modelo3dTato.transform.rotation, rotation, velocidadRotacion * Time.deltaTime);*/
+
+            Vector3 dir = -rigidbody.velocity;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            Quaternion q = Quaternion.AngleAxis(angle , modelo3dTato.transform.forward);
+            modelo3dTato.transform.rotation = Quaternion.Slerp(modelo3dTato.transform.rotation, q, velocidadRotacion * Time.deltaTime);
+        }
+    }
+    
     private void FixedUpdate()
     {
         transform.position += movem * Time.fixedDeltaTime * velocidad;
